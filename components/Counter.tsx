@@ -134,7 +134,7 @@ const Counter = ({ initialTime, variant='base', ended=false, name }: CounterProp
 
 export default Counter
 
-export const CounterLoading = ({ variant }: { variant: 'base' | 'list' }) => {
+export const CounterLoading = ({ variant='base' }: { variant?: 'base' | 'list' }) => {
 	return (
 		variant === 'base' ? (
 			<div>

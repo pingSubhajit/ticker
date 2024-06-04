@@ -1,5 +1,4 @@
 import {createClient} from '@/utils/supabase/server'
-import {redirect} from 'next/navigation'
 import TimerList, {Timer} from '@/components/TimerList'
 import AppHeader from '@/components/AppHeader'
 import Button from '@/components/Button'
@@ -12,15 +11,11 @@ const AppHome = async () => {
 
 	const {data: { user }} = await supabase.auth.getUser()
 
-	if (!user) {
-		return redirect('/')
-	}
-
 	const {data: timers, error} = await supabase.from('timer').select('*') as unknown as { data: Timer[], error: any }
 
 	return (
 		<main className="flex flex-col gap-16">
-			<AppHeader title="Ticker" profileUrl={user.user_metadata.avatar_url} />
+			<AppHeader title="Ticker" profileUrl={user!.user_metadata.avatar_url} />
 
 			<div>
 				<p className="text-sm opacity-60">
@@ -29,7 +24,7 @@ const AppHome = async () => {
 				<div className="flex justify-between items-end mt-4 gap-4">
 					<h1 className="flex flex-col gap-2 text-5xl truncate">
 						<span className="text-yellow-400">Welcome</span>
-						<span className="text-6xl truncate">{user.user_metadata.name.split(' ')[0]}</span>
+						<span className="text-6xl truncate">{user!.user_metadata.name.split(' ')[0]}</span>
 					</h1>
 
 					<Button size="icon" className="p-6">

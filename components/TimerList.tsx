@@ -1,6 +1,7 @@
 import {CounterLoading, Pause} from '@/components/Counter'
 import dynamic from 'next/dynamic'
 import {cn} from '@/lib/utils'
+import Link from 'next/link'
 
 const Counter = dynamic(() => import('@/components/Counter'), {ssr: false, loading: () => <CounterLoading variant="list" />})
 
@@ -19,7 +20,9 @@ const TimerList = ({ timers, className }: { timers: Timer[], className?: string 
 		<div className={cn('w-full space-y-3', className)}>
 			{timers.map((timer) => (
 				<>
-					<Counter initialTime={timer.started_at} variant="list" name={timer.name} key={timer.id} />
+					<Link href={`/app/timer/${timer.id}`} key={timer.id}>
+						<Counter initialTime={timer.started_at} variant="list" name={timer.name} />
+					</Link>
 					<Counter initialTime={timer.started_at} variant="list" name={timer.name} key={timer.id} />
 					<Counter initialTime={timer.started_at} variant="list" name={timer.name} key={timer.id} />
 				</>
