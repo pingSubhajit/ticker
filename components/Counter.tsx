@@ -96,7 +96,7 @@ const Counter = ({ initialTime, variant='base', ended=false, name }: CounterProp
 					<p className="absolute -right-2 font-medium pb-4 translate-x-4">s</p>
 				</div>
 
-				<div className="flex items-center mt-8 gap-2">
+				<div className="flex items-center mt-8 gap-2 justify-center">
 					<button className="bg-yellow-400 text-transparent p-12 rounded-2xl hover:bg-yellow-500 transition">
 						<Square className="fill-neutral-950 w-8 h-8"/>
 					</button>
