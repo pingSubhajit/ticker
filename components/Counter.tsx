@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import {useEffect, useState} from 'react'
 import {cn} from '@/lib/utils'
 import {Pause, Play, Square} from 'lucide-react'
 
@@ -42,11 +42,24 @@ const Counter = ({ initialTime }: { initialTime: number }) => {
 				const hours = Math.floor(minutes / 60)
 				const days = Math.floor(hours / 24)
 				setBreakdown({ hours, minutes, seconds, days })
+				setBreakdown({ hours, minutes, seconds, days })
 				return currentTime
 			})
 		}, 100) // Updating time every 100 milliseconds
 		return () => clearInterval(intervalId) // Cleanup function to clear the interval when component unmounts
 	}, [isRunning]) // Empty dependency array ensures the effect runs only once when component mounts
+
+	useEffect(() => {
+		const continueCounterOnFocusIn = () => {
+			if (document.visibilityState == 'visible' && isRunning) {
+				setTime(Date.now())
+			}
+		}
+
+		document.addEventListener('visibilitychange', continueCounterOnFocusIn)
+
+		return () => {document.removeEventListener('visibilitychange', continueCounterOnFocusIn)}
+	}, [isRunning])
 
 	return (
 		<div>
