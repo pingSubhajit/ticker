@@ -6,7 +6,6 @@ import Button from '@/components/Button'
 import {Plus} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Separator from '@/components/Separator'
-import AuthButton from '@/components/AuthButton'
 
 const AppHome = async () => {
 	const supabase = createClient()
@@ -22,8 +21,6 @@ const AppHome = async () => {
 	return (
 		<main className="flex flex-col gap-16">
 			<AppHeader title="Ticker" profileUrl={user.user_metadata.avatar_url} />
-
-			<AuthButton />
 
 			<div>
 				<p className="text-sm opacity-60">
