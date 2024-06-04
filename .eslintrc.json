@@ -1,3 +1,15 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "semi": ["error", "never"],
+    "quotes": ["error", "single"],
+    "arrow-spacing": ["error", { "before": true, "after": true }],
+    "no-console": "warn",
+    "indent": ["error", "tab"],
+    "react/jsx-no-undef": "off",
+    "@next/next/no-sync-scripts": "off",
+    "@next/next/no-img-element": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/no-unescaped-entities": "off"
+  }
 }
