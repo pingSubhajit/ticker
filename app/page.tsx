@@ -17,7 +17,7 @@ export default async function Home() {
 	}
 
 	return (
-		<main className="flex min-h-svh w-screen mx-auto max-w-[700px] flex-col items-start justify-end p-8 gap-8">
+		<main className="flex flex-col items-start justify-end gap-8">
 			<h1 className="flex flex-col text-5xl leading-[1.15] lg:flex-row lg:flex-wrap">
 				<span className="text-yellow-400 whitespace-nowrap">Measure</span>
 				<span><span className="italic whitespace-nowrap">time</span> <span

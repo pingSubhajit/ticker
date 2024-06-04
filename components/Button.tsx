@@ -16,12 +16,13 @@ const button = cva('rounded-2xl transition', {
 				'text-yellow-400',
 				'border border-yellow-400',
 				'hover:bg-yellow-400/10',
-			],
+			]
 		},
 		size: {
 			small: ['text-sm', 'py-1', 'px-2'],
 			base: ['text-base', 'py-2', 'px-4'],
-			full: ['w-full', 'py-3', 'px-4']
+			full: ['w-full', 'py-3', 'px-4'],
+			icon: ['p-12']
 		},
 	},
 	defaultVariants: {
@@ -33,7 +34,7 @@ const button = cva('rounded-2xl transition', {
 interface ButtonProps {
 	children: ReactNode
 	variant?: 'primary' | 'secondary'
-	size?: 'small' | 'base' | 'full'
+	size?: 'small' | 'base' | 'full' | 'icon'
 	onClick?: () => void
 	className?: string
 }

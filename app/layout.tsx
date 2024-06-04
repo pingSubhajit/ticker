@@ -12,7 +12,11 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang="en">
-			<body className="font-ClashDisplay">{children}</body>
+			<body className="font-ClashDisplay">
+				<div className="min-h-svh w-full mx-auto max-w-[700px] p-8">
+					{children}
+				</div>
+			</body>
 		</html>
 	)
 }
