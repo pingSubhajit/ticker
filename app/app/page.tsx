@@ -6,6 +6,7 @@ import Button from '@/components/Button'
 import {Plus} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Separator from '@/components/Separator'
+import AuthButton from '@/components/AuthButton'
 
 const AppHome = async () => {
 	const supabase = createClient()
@@ -22,14 +23,16 @@ const AppHome = async () => {
 		<main className="flex flex-col gap-16">
 			<AppHeader title="Ticker" profileUrl={user.user_metadata.avatar_url} />
 
+			<AuthButton />
+
 			<div>
 				<p className="text-sm opacity-60">
 					{DateTime.fromMillis(Date.now()).toFormat('LLL dd\', \'EEEE')}
 				</p>
-				<div className="flex justify-between items-end mt-4">
-					<h1 className="flex flex-col gap-2 text-5xl">
+				<div className="flex justify-between items-end mt-4 gap-4">
+					<h1 className="flex flex-col gap-2 text-5xl truncate">
 						<span className="text-yellow-400">Welcome</span>
-						<span className="text-7xl truncate">{user.user_metadata.name.split(' ')[0]}</span>
+						<span className="text-6xl truncate">{user.user_metadata.name.split(' ')[0]}</span>
 					</h1>
 
 					<Button size="icon" className="p-6">
