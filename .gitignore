@@ -12,6 +12,9 @@
 /.next/
 /out/
 
+# secrets
+google_oauth_creds.json
+
 # env
 /.env
 /.env.old

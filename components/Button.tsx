@@ -34,12 +34,13 @@ interface ButtonProps {
 	children: ReactNode
 	variant?: 'primary' | 'secondary'
 	size?: 'small' | 'base' | 'full'
+	onClick?: () => void
 	className?: string
 }
 
-const Button = ({className, variant, size, children, ...props }: ButtonProps) => {
+const Button = ({className, variant, size, children, onClick, ...props }: ButtonProps) => {
 	return (
-		<button className={button({ variant, size, className })} {...props}>
+		<button className={button({ variant, size, className })} {...props} onClick={onClick}>
 			{children}
 		</button>
 	)
