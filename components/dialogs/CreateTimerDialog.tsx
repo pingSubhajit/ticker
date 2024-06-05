@@ -10,6 +10,7 @@ import {Input} from '@/components/ui/input'
 import Button from '@/components/Button'
 import {createTimer} from '@/lib/mutations'
 import {toast} from 'sonner'
+import {LoaderCircle} from 'lucide-react'
 
 const formSchema = z.object({
 	name: asOptionalField(z.string().max(25)),
@@ -56,7 +57,10 @@ const CreateTimerDialog = ({ open, setOpen }: { open: boolean, setOpen: (isOpen:
 								</FormItem>
 							)}
 						/>
-						<Button type="submit" className="w-full">Start timer</Button>
+						<Button type="submit" disabled={form.formState.isSubmitting} className="w-full">
+							{form.formState.isSubmitting && <LoaderCircle className="w-4 h-4 animate-spin" />}
+							Start timer
+						</Button>
 					</form>
 				</Form>
 			</DialogContent>

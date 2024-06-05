@@ -2,7 +2,7 @@ import * as React from 'react'
 import {ReactNode} from 'react'
 import {cva} from 'class-variance-authority'
 
-const button = cva('rounded-2xl transition', {
+const button = cva('rounded-2xl transition flex justify-center items-center gap-2', {
 	variants: {
 		variant: {
 			primary: [

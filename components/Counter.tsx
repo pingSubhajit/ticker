@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from 'react'
 import {Breakdown, cn, getInitialBreakdown} from '@/lib/utils'
-import {Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
+import {LoaderCircle, Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Button from '@/components/Button'
 import {deleteTimer, restartTimer, stopTimer} from '@/lib/mutations'
@@ -29,8 +29,14 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(initialTime, endedAt))
 	const [pauses, setPauses] = useState<Pause[]>([])
 	const [isRunning, setIsRunning] = useState(true)
+	const [loading, setLoading] = useState({
+		restart: false,
+		delete: false,
+		stop: false
+	})
 
 	const removeTimer = async (withRedirect:boolean=true) => {
+		setLoading({ ...loading, delete: true })
 		const deleteTimerFunction = async () => {
 			try {
 				const deletedTimer = await deleteTimer(id, withRedirect)
@@ -45,6 +51,30 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 		} else {
 			await deleteTimerFunction()
 		}
+
+		setLoading({ ...loading, delete: false })
+	}
+
+	const restartCounting = async () => {
+		setLoading({ ...loading, restart: true })
+		try {
+			const restartedTimer = await restartTimer(id)
+			toast.success(`Timer "${restartedTimer.name}" restarted`)
+		} catch (error: any) {
+			toast.error(error.message || 'Could not restart timer')
+		}
+		setLoading({ ...loading, restart: false })
+	}
+
+	const stopCounting = async () => {
+		setLoading({ ...loading, stop: true })
+		try {
+			const stoppedTimer = await stopTimer(id)
+			toast.success(`Timer "${stoppedTimer.name}" stopped`)
+		} catch (error: any) {
+			toast.error(error.message || 'Could not stop timer')
+		}
+		setLoading({ ...loading, stop: false })
 	}
 
 	const pauseCounting = () => {
@@ -118,16 +148,19 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 				</div>
 
 				<div className="flex items-center mt-8 gap-2 justify-center">
-					{id && !endedAt && <Button size="icon" onClick={() => stopTimer(id)} variant="secondary">
-						<Square className="fill-yellow-400 w-8 h-8" />
+					{id && !endedAt && <Button size="icon" onClick={stopCounting} variant="secondary" disabled={loading.stop}>
+						{loading.stop && <LoaderCircle className="w-8 h-8 animate-spin" />}
+						{!loading.stop && <Square className="fill-yellow-400 w-8 h-8" />}
 					</Button>}
 
-					{id && endedAt && <Button size="icon" onClick={() => restartTimer(id)}>
-						<RotateCw className="w-8 h-8" strokeWidth={3} />
+					{id && endedAt && <Button size="icon" onClick={restartCounting} disabled={loading.restart}>
+						{loading.restart && <LoaderCircle className="w-8 h-8 animate-spin" />}
+						{!loading.restart && <RotateCw className="w-8 h-8" strokeWidth={3} />}
 					</Button>}
 
-					{id && endedAt && <Button size="icon" onClick={() => removeTimer(true)} variant="secondary">
-						<Trash2 className="w-8 h-8" strokeWidth={3} />
+					{id && endedAt && <Button size="icon" onClick={() => removeTimer(true)} variant="secondary" disabled={loading.delete}>
+						{loading.delete && <LoaderCircle className="w-8 h-8 animate-spin" />}
+						{!loading.delete && <Trash2 className="w-8 h-8" strokeWidth={3} />}
 					</Button>}
 
 					{isRunning && !endedAt && <Button onClick={pauseCounting} size="icon">
@@ -142,7 +175,8 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 		) : (
 			<li
 				role="listitem"
-				className="flex items-center gap-1 w-full rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group"
+				className="flex items-center gap-1 w-full rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden
+				group hover-hover:hover:bg-neutral-200/10 transition"
 			>
 				<p className="w-1/3 text-left truncate opacity-60 font-sans">{name}</p>
 
@@ -163,7 +197,8 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 				<Button
 					size="icon"
 					className="absolute top-0 bottom-0 h-full right-0 translate-x-[100%]
-					hover-hover:group-hover:translate-x-0 aspect-square !p-0 flex items-center justify-center rounded-none"
+					hover-hover:group-hover:translate-x-0 group-focus-visible:translate-x-0 aspect-square !p-0 flex
+					items-center justify-center rounded-none" tabIndex={-1}
 					onClick={(event) => {
 						event.stopPropagation()
 						event.preventDefault()
