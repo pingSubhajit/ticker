@@ -21,7 +21,7 @@ const SingleTimer = async ({ params: { timerId } }: { params: { timerId: number 
 		<main className="flex flex-col justify-between gap-8">
 			<AppHeader title={timer.name || `Timer no. ${timer.id}`} profileUrl={user!.user_metadata.avatar_url}/>
 
-			<Counter initialTime={timer.started_at} name={timer.name}/>
+			<Counter initialTime={timer.started_at} name={timer.name} id={timer.id} endedAt={timer.ended_at} />
 
 			<p className="text-center opacity-60 font-sans">Started {getInitialBreakdown(timer.started_at).days}d ago</p>
 		</main>

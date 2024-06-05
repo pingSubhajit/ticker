@@ -22,3 +22,22 @@ export const createTimer = async (name?: string) => {
 	
 	return timer as Timer
 }
+
+export const stopTimer = async (timerId: number) => {
+	const supabase = createClient()
+
+	const { data: timer, error } = await supabase
+		.from('timer')
+		.update({
+			ended_at: Date.now()
+		}).eq('id', timerId).select().single()
+
+	if (error) {
+		throw new Error(error.message || 'Could not stop timer')
+	}
+
+	revalidatePath('/app')
+	revalidatePath(`/app/timer/${timerId}`)
+
+	return timer as Timer
+}

@@ -2,9 +2,10 @@
 
 import {useEffect, useState} from 'react'
 import {Breakdown, cn, getInitialBreakdown} from '@/lib/utils'
-import {Pause, Play, Square} from 'lucide-react'
+import {Pause, Play, RotateCw, Square} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Button from '@/components/Button'
+import {stopTimer} from '@/lib/mutations'
 
 export type Pause = {
 	pauseId: number
@@ -17,9 +18,10 @@ interface CounterProps {
 	variant?: 'base' | 'list',
 	name?: string
 	endedAt?: number,
+	id?: number
 }
 
-const Counter = ({ initialTime, variant='base', name, endedAt }: CounterProps) => {
+const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProps) => {
 	const startDate = DateTime.fromMillis(initialTime).toFormat('LLL dd\', \'HH:mm')
 	const [time, setTime] = useState(Date.now())
 	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(initialTime, endedAt))
@@ -56,7 +58,7 @@ const Counter = ({ initialTime, variant='base', name, endedAt }: CounterProps) =
 			})
 		}, 100) // Updating time every 100 milliseconds
 		return () => clearInterval(intervalId) // Cleanup function to clear the interval when component unmounts
-	}, [isRunning]) // Empty dependency array ensures the effect runs only once when component mounts
+	}, [isRunning, endedAt]) // Empty dependency array ensures the effect runs only once when component mounts
 
 	useEffect(() => {
 		const continueCounterOnFocusIn = () => {
@@ -97,16 +99,20 @@ const Counter = ({ initialTime, variant='base', name, endedAt }: CounterProps) =
 				</div>
 
 				<div className="flex items-center mt-8 gap-2 justify-center">
-					<button className="bg-yellow-400 text-transparent p-12 rounded-2xl hover:bg-yellow-500 transition">
-						<Square className="fill-neutral-950 w-8 h-8"/>
-					</button>
-
-					{isRunning && <Button onClick={pauseCounting} size="icon">
-						<Pause className="fill-neutral-950 w-8 h-8"/>
+					{id && !endedAt && <Button size="icon" onClick={() => stopTimer(id)}>
+						<Square className="fill-neutral-950 w-8 h-8" />
 					</Button>}
 
-					{!isRunning && <Button onClick={resumeCounting} size="icon">
-						<Play className="fill-neutral-950 w-8 h-8"/>
+					{id && endedAt && <Button size="icon" onClick={() => stopTimer(id)}>
+						<RotateCw className="w-8 h-8" strokeWidth={3} />
+					</Button>}
+
+					{isRunning && !endedAt && <Button onClick={pauseCounting} size="icon">
+						<Pause className="fill-neutral-950 w-8 h-8" />
+					</Button>}
+
+					{!isRunning && !endedAt && <Button onClick={resumeCounting} size="icon">
+						<Play className="fill-neutral-950 w-8 h-8" />
 					</Button>}
 				</div>
 			</div>
