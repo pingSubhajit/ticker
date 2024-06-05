@@ -6,6 +6,7 @@ import Separator from '@/components/Separator'
 import NewTimerButton from '@/components/NewTimerButton'
 import TimersEmpty from '@/components/TimersEmpty'
 import {Metadata} from 'next'
+import {getCurrentUTCUnixTimestamp} from '@/lib/utils'
 
 export const metadata: Metadata = {
 	title: 'Ticker - Long Duration Stopwatch',
@@ -31,7 +32,7 @@ const AppHome = async () => {
 
 			<div>
 				<p className="text-sm opacity-60">
-					{DateTime.fromMillis(Date.now()).toFormat('LLL dd\', \'EEEE')}
+					{DateTime.fromMillis(getCurrentUTCUnixTimestamp()).toFormat('LLL dd\', \'EEEE')}
 				</p>
 				<div className="flex justify-between items-end mt-4 gap-4">
 					<h1 className="flex flex-col gap-2 truncate">
