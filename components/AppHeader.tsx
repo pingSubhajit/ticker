@@ -4,7 +4,7 @@ import {ChevronLeft} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const AppHeader = ({ title, profileUrl }: { title: string, profileUrl: string }) => {
+const AppHeader = ({ title, profileUrl, isTimer=false }: { title: string, profileUrl: string, isTimer?: boolean }) => {
 	return (
 		<header className="flex items-center justify-between gap-2 md:gap-4">
 			<button className="w-10 aspect-square bg-neutral-50/5 rounded-full flex items-center justify-center">

@@ -93,7 +93,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 
 	return (
 		variant === 'base' ? (
-			<div>
+			<div className="h-full">
 				{breakdown.days > 0 && <p className="font-medium text-3xl text-center">{breakdown.days} days &</p>}
 				<div
 					className={cn('flex items-end justify-center relative', breakdown.hours !== 0 && 'text-yellow-400')}>

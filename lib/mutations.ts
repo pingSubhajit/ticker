@@ -23,6 +23,25 @@ export const createTimer = async (name?: string) => {
 	return timer as Timer
 }
 
+export const updateName = async (timerId: number, name: string) => {
+	const supabase = createClient()
+
+	const { data: timer, error } = await supabase
+		.from('timer')
+		.update({
+			name
+		}).eq('id', timerId).select().single()
+
+	if (error) {
+		throw new Error(error.message || 'Could not rename timer')
+	}
+
+	revalidatePath('/app')
+	revalidatePath(`/app/timer/${timerId}`)
+
+	return timer as Timer
+}
+
 export const stopTimer = async (timerId: number) => {
 	const supabase = createClient()
 
