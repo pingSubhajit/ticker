@@ -5,7 +5,8 @@ import {Breakdown, cn, getInitialBreakdown} from '@/lib/utils'
 import {Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Button from '@/components/Button'
-import {stopTimer} from '@/lib/mutations'
+import {deleteTimer, stopTimer} from '@/lib/mutations'
+import {toast} from 'sonner'
 
 export type Pause = {
 	pauseId: number
@@ -18,7 +19,7 @@ interface CounterProps {
 	variant?: 'base' | 'list',
 	name?: string
 	endedAt?: number,
-	id?: number
+	id: number
 }
 
 const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProps) => {
@@ -28,8 +29,13 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProp
 	const [pauses, setPauses] = useState<Pause[]>([])
 	const [isRunning, setIsRunning] = useState(true)
 
-	const deleteTimer = () => {
-		console.log('delete')
+	const removeTimer = async () => {
+		try {
+			const deletedTimer = await deleteTimer(id)
+			toast.success(`Timer "${deletedTimer.name}" deleted`)
+		} catch (error: any) {
+			toast.error(error.message || 'Could not delete timer')
+		}
 	}
 
 	const pauseCounting = () => {
@@ -111,6 +117,10 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProp
 						<RotateCw className="w-8 h-8" strokeWidth={3} />
 					</Button>}
 
+					{id && endedAt && <Button size="icon" onClick={removeTimer}>
+						<Trash2 className="w-8 h-8" strokeWidth={3} />
+					</Button>}
+
 					{isRunning && !endedAt && <Button onClick={pauseCounting} size="icon">
 						<Pause className="fill-neutral-950 w-8 h-8" />
 					</Button>}
@@ -145,7 +155,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProp
 					onClick={(event) => {
 						event.stopPropagation()
 						event.preventDefault()
-						deleteTimer()
+						removeTimer()
 					}}
 				>
 					<Trash2 className="w-6 h-6" strokeWidth={2} />

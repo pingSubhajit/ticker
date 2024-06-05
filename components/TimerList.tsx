@@ -25,6 +25,7 @@ const TimerList = ({ timers, className }: { timers?: Timer[], className?: string
 						variant="list"
 						name={timer.name}
 						endedAt={timer.ended_at}
+						id={timer.id}
 					/>
 				</Link>
 			))}
