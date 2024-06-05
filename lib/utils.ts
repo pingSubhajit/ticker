@@ -13,7 +13,7 @@ export function asOptionalField<T extends z.ZodTypeAny>(schema: T) {
 
 // Initial breakdown
 export const getInitialBreakdown = (initialTime: number, endedAt?: number) => {
-	const seconds = Math.floor(((endedAt || getCurrentUTCUnixTimestamp()) - initialTime) / 1000)
+	const seconds = Math.floor(((endedAt || getCurrentPSTUnixTimestamp()) - initialTime) / 1000)
 	const minutes = Math.floor(seconds / 60)
 	const hours = Math.floor(minutes / 60)
 	const days = Math.floor(hours / 24)
@@ -27,12 +27,11 @@ export type Breakdown = {
   seconds: number
 }
 
-export const getCurrentUTCUnixTimestamp = () => {
-	// return Math.floor((new Date()).getTime() / 1000)
-	let date = new Date()
-	let timezoneOffset = date.getTimezoneOffset()
-	let pstOffset = -480 // this is the offset for the Pacific Standard Time timezone
+export const getCurrentPSTUnixTimestamp = () => {
+	const date = new Date()
+	const timezoneOffset = date.getTimezoneOffset()
+	const pstOffset = -480 // this is the offset for the Pacific Standard Time timezone
 	// Get UNIX timestamp in milliseconds and adjust for the timezone offset
-	let adjustedTime = new Date(date.getTime() + (timezoneOffset + pstOffset) * 60000)
+	const adjustedTime = new Date(date.getTime() + (timezoneOffset + pstOffset) * 60000)
 	return adjustedTime.getTime()
 }

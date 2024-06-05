@@ -1,7 +1,7 @@
 'use client'
 
 import {useEffect, useState} from 'react'
-import {Breakdown, cn, getCurrentUTCUnixTimestamp, getInitialBreakdown} from '@/lib/utils'
+import {Breakdown, cn, getCurrentPSTUnixTimestamp, getInitialBreakdown} from '@/lib/utils'
 import {LoaderCircle, Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Button from '@/components/Button'
@@ -25,7 +25,7 @@ interface CounterProps {
 
 const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: CounterProps) => {
 	const startDate = DateTime.fromMillis(initialTime).toFormat('LLL dd\', \'HH:mm')
-	const [time, setTime] = useState(getCurrentUTCUnixTimestamp())
+	const [time, setTime] = useState(getCurrentPSTUnixTimestamp())
 	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(initialTime, endedAt))
 	const [pauses, setPauses] = useState<Pause[]>([])
 	const [isRunning, setIsRunning] = useState(true)
@@ -79,13 +79,13 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 
 	const pauseCounting = () => {
 		const pauseId = pauses.length + 1
-		const pausedAt = getCurrentUTCUnixTimestamp()
+		const pausedAt = getCurrentPSTUnixTimestamp()
 		setPauses([...pauses, { pauseId, pausedAt }])
 		setIsRunning(false)
 	}
 
 	const resumeCounting = () => {
-		const resumedAt = getCurrentUTCUnixTimestamp()
+		const resumedAt = getCurrentPSTUnixTimestamp()
 		const latestPause = pauses[pauses.length - 1]
 		latestPause.resumedAt = resumedAt
 		const updatedPauses = pauses.map(pause => pause.pauseId === latestPause.pauseId ? latestPause : pause)
@@ -97,7 +97,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 		const intervalId = setInterval(() => {
 			if (!isRunning || endedAt) return
 			setTime(prevTime => {
-				const currentTime = !isRunning ? prevTime : getCurrentUTCUnixTimestamp() + 100
+				const currentTime = !isRunning ? prevTime : getCurrentPSTUnixTimestamp() + 100
 				const seconds = Math.floor((currentTime - initialTime) / 1000)
 				const minutes = Math.floor(seconds / 60)
 				const hours = Math.floor(minutes / 60)
@@ -112,7 +112,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 	useEffect(() => {
 		const continueCounterOnFocusIn = () => {
 			if (document.visibilityState == 'visible' && isRunning) {
-				setTime(getCurrentUTCUnixTimestamp())
+				setTime(getCurrentPSTUnixTimestamp())
 			}
 		}
 
