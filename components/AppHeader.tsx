@@ -2,6 +2,7 @@
 
 import {ChevronLeft} from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const AppHeader = ({ title, profileUrl }: { title: string, profileUrl: string }) => {
 	return (
@@ -15,9 +16,9 @@ const AppHeader = ({ title, profileUrl }: { title: string, profileUrl: string })
 				{title}
 			</h2>
 
-			<button>
+			<Link href="/auth/logout">
 				<Image src={profileUrl} alt={profileUrl} width={128} height={128} className="w-10 h-10 rounded-full" />
-			</button>
+			</Link>
 		</header>
 	)
 }
