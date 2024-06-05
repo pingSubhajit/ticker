@@ -42,6 +42,26 @@ export const stopTimer = async (timerId: number) => {
 	return timer as Timer
 }
 
+export const restartTimer = async (timerId: number) => {
+	const supabase = createClient()
+
+	const { data: timer, error } = await supabase
+		.from('timer')
+		.update({
+			started_at: Date.now(),
+			ended_at: null
+		}).eq('id', timerId).select().single()
+
+	if (error) {
+		throw new Error(error.message || 'Could not restart timer')
+	}
+
+	revalidatePath('/app')
+	revalidatePath(`/app/timer/${timerId}`)
+
+	return timer as Timer
+}
+
 export const deleteTimer = async (timerId: number, withRedirect=true) => {
 	const supabase = createClient()
 

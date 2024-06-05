@@ -5,7 +5,7 @@ import {Breakdown, cn, getInitialBreakdown} from '@/lib/utils'
 import {Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Button from '@/components/Button'
-import {deleteTimer, stopTimer} from '@/lib/mutations'
+import {deleteTimer, restartTimer, stopTimer} from '@/lib/mutations'
 import {toast} from 'sonner'
 
 export type Pause = {
@@ -67,7 +67,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 		const intervalId = setInterval(() => {
 			if (!isRunning || endedAt) return
 			setTime(prevTime => {
-				const currentTime = prevTime + 100
+				const currentTime = !isRunning ? prevTime : Date.now() + 100
 				const seconds = Math.floor((currentTime - initialTime) / 1000)
 				const minutes = Math.floor(seconds / 60)
 				const hours = Math.floor(minutes / 60)
@@ -98,14 +98,14 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 				<div
 					className={cn('flex items-end justify-center relative', breakdown.hours !== 0 && 'text-yellow-400')}>
 					<p className="text-center text-9xl">
-						{breakdown.hours.toString().padStart(2, '0')}
+						{(breakdown.hours % 24).toString().padStart(2, '0')}
 					</p>
 					<p className="absolute -right-2 font-medium pb-4 translate-x-4">h</p>
 				</div>
 				<div
 					className={cn('flex items-end justify-center relative', breakdown.hours === 0 && breakdown.minutes !== 0 && 'text-yellow-400')}>
 					<p className="text-center text-9xl">
-						{(breakdown.minutes % 60).toString().padStart(2, '0')}
+						{(breakdown.minutes % 60)}
 					</p>
 					<p className="absolute -right-2 font-medium pb-4 translate-x-4">m</p>
 				</div>
@@ -122,7 +122,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 						<Square className="fill-neutral-950 w-8 h-8" />
 					</Button>}
 
-					{id && endedAt && <Button size="icon" onClick={() => stopTimer(id)}>
+					{id && endedAt && <Button size="icon" onClick={() => restartTimer(id)}>
 						<RotateCw className="w-8 h-8" strokeWidth={3} />
 					</Button>}
 
