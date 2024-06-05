@@ -1,7 +1,10 @@
+'use client'
+
 import {CounterLoading, Pause} from '@/components/Counter'
 import dynamic from 'next/dynamic'
 import {cn} from '@/lib/utils'
 import Link from 'next/link'
+import {startTransition, useEffect, useOptimistic, useState} from 'react'
 
 const Counter = dynamic(() => import('@/components/Counter'), {ssr: false, loading: () => <CounterLoading variant="list" />})
 
@@ -15,10 +18,33 @@ export type Timer = {
 	user: string
 }
 
-const TimerList = ({ timers, className }: { timers?: Timer[], className?: string }) => {
+const TimerList = ({ initialTimers, className }: { initialTimers?: Timer[], className?: string }) => {
+	const [timers, setTimers] = useState(initialTimers)
+	const [optimisticTimers, setOptimisticTimers] = useOptimistic(
+		timers,
+		(_, newTimers: Timer[]) => newTimers
+	)
+
+	useEffect(() => {
+		setTimers(initialTimers)
+		startTransition(() => {
+			setOptimisticTimers(initialTimers || [])
+		})
+	}, [initialTimers])
+
+	const onDelete = async (id: number, next: () => Promise<void>) => {
+		const newTimers = optimisticTimers!.filter((timer) => timer.id !== id)
+		startTransition(() => {
+			setOptimisticTimers(newTimers)
+		})
+
+		await next()
+		setTimers(newTimers)
+	}
+
 	return (
 		<div className={cn('w-full flex flex-col gap-3', className)}>
-			{timers?.map((timer) => (
+			{optimisticTimers?.map((timer) => (
 				<Link href={`/app/timer/${timer.id}`} key={timer.id}>
 					<Counter
 						initialTime={timer.started_at}
@@ -26,6 +52,7 @@ const TimerList = ({ timers, className }: { timers?: Timer[], className?: string
 						name={timer.name}
 						endedAt={timer.ended_at}
 						id={timer.id}
+						onDelete={onDelete}
 					/>
 				</Link>
 			))}

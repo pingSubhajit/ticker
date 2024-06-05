@@ -20,7 +20,6 @@ export const createTimer = async (name?: string) => {
 	}
 
 	revalidatePath('/app')
-	
 	return timer as Timer
 }
 
@@ -43,7 +42,7 @@ export const stopTimer = async (timerId: number) => {
 	return timer as Timer
 }
 
-export const deleteTimer = async (timerId: number) => {
+export const deleteTimer = async (timerId: number, withRedirect=true) => {
 	const supabase = createClient()
 
 	const { data: timer, error } = await supabase
@@ -54,9 +53,7 @@ export const deleteTimer = async (timerId: number) => {
 		throw new Error(error.message || 'Could not delete timer')
 	}
 
-	revalidatePath('/app')
-	revalidatePath(`/app/timer/${timerId}`)
-	redirect('/app')
+	withRedirect && redirect('/app')
 
 	return timer as Timer
 }

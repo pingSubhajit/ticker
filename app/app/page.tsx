@@ -38,14 +38,14 @@ const AppHome = async () => {
 
 			<div>
 				<p className="text-sm opacity-60">Ongoing timers</p>
-				<TimerList timers={timers} className="mt-4" />
+				<TimerList initialTimers={timers} className="mt-4" />
 			</div>
 
 			<Separator />
 
 			<div>
 				<p className="text-sm opacity-60">Old timers</p>
-				<TimerList timers={oldTimers} className="mt-4" />
+				<TimerList initialTimers={oldTimers} className="mt-4" />
 			</div>
 		</main>
 	)

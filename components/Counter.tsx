@@ -16,25 +16,34 @@ export type Pause = {
 
 interface CounterProps {
 	initialTime: number,
-	variant?: 'base' | 'list',
+	variant?: 'base' | 'list'
 	name?: string
-	endedAt?: number,
+	endedAt?: number
 	id: number
+	onDelete?: (id: number, next: () => Promise<void>) => Promise<void>
 }
 
-const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProps) => {
+const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: CounterProps) => {
 	const startDate = DateTime.fromMillis(initialTime).toFormat('LLL dd\', \'HH:mm')
 	const [time, setTime] = useState(Date.now())
 	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(initialTime, endedAt))
 	const [pauses, setPauses] = useState<Pause[]>([])
 	const [isRunning, setIsRunning] = useState(true)
 
-	const removeTimer = async () => {
-		try {
-			const deletedTimer = await deleteTimer(id)
-			toast.success(`Timer "${deletedTimer.name}" deleted`)
-		} catch (error: any) {
-			toast.error(error.message || 'Could not delete timer')
+	const removeTimer = async (withRedirect:boolean=true) => {
+		const deleteTimerFunction = async () => {
+			try {
+				const deletedTimer = await deleteTimer(id, withRedirect)
+				toast.success(`Timer "${deletedTimer?.name}" deleted`)
+			} catch (error: any) {
+				toast.error(error.message || 'Could not delete timer')
+			}
+		}
+
+		if (onDelete) {
+			await onDelete(id, deleteTimerFunction)
+		} else {
+			await deleteTimerFunction()
 		}
 	}
 
@@ -117,7 +126,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProp
 						<RotateCw className="w-8 h-8" strokeWidth={3} />
 					</Button>}
 
-					{id && endedAt && <Button size="icon" onClick={removeTimer}>
+					{id && endedAt && <Button size="icon" onClick={() => removeTimer(true)}>
 						<Trash2 className="w-8 h-8" strokeWidth={3} />
 					</Button>}
 
@@ -155,7 +164,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProp
 					onClick={(event) => {
 						event.stopPropagation()
 						event.preventDefault()
-						removeTimer()
+						removeTimer(false)
 					}}
 				>
 					<Trash2 className="w-6 h-6" strokeWidth={2} />
