@@ -201,6 +201,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 					items-center justify-center rounded-none" tabIndex={-1}
 					onClick={(event) => {
 						event.stopPropagation()
+						event.nativeEvent.stopImmediatePropagation()
 						event.preventDefault()
 						removeTimer(false)
 					}}
