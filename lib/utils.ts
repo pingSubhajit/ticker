@@ -15,8 +15,8 @@ export const getInitialBreakdown = (initialTime: number) => {
 }
 
 export type Breakdown = {
-	days: number
-	hours: number
-	minutes: number
-	seconds: number
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
 }
