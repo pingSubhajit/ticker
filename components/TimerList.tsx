@@ -17,15 +17,16 @@ export type Timer = {
 
 const TimerList = ({ timers, className }: { timers: Timer[], className?: string }) => {
 	return (
-		<div className={cn('w-full space-y-3', className)}>
+		<div className={cn('w-full flex flex-col gap-3', className)}>
 			{timers.map((timer) => (
-				<>
-					<Link href={`/app/timer/${timer.id}`} key={timer.id}>
-						<Counter initialTime={timer.started_at} variant="list" name={timer.name} />
-					</Link>
-					<Counter initialTime={timer.started_at} variant="list" name={timer.name} key={timer.id} />
-					<Counter initialTime={timer.started_at} variant="list" name={timer.name} key={timer.id} />
-				</>
+				<Link href={`/app/timer/${timer.id}`} key={timer.id}>
+					<Counter
+						initialTime={timer.started_at}
+						variant="list"
+						name={timer.name}
+						endedAt={timer.ended_at}
+					/>
+				</Link>
 			))}
 		</div>
 	)

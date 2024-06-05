@@ -1,3 +1,4 @@
+import * as React from 'react'
 import {ReactNode} from 'react'
 import {cva} from 'class-variance-authority'
 
@@ -31,20 +32,21 @@ const button = cva('rounded-2xl transition', {
 	},
 })
 
-interface ButtonProps {
-	children: ReactNode
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	variant?: 'primary' | 'secondary'
 	size?: 'small' | 'base' | 'full' | 'icon'
-	onClick?: () => void
-	className?: string
+	className?: string,
+	children: ReactNode
 }
 
-const Button = ({className, variant, size, children, onClick, ...props }: ButtonProps) => {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({className, variant, size, children, ...props }, ref) => {
 	return (
-		<button className={button({ variant, size, className })} {...props} onClick={onClick}>
+		<button className={button({ variant, size, className })} {...props}>
 			{children}
 		</button>
 	)
-}
+})
+
+Button.displayName = 'Button'
 
 export default Button

@@ -1,10 +1,9 @@
 import {createClient} from '@/utils/supabase/server'
 import TimerList, {Timer} from '@/components/TimerList'
 import AppHeader from '@/components/AppHeader'
-import Button from '@/components/Button'
-import {Plus} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Separator from '@/components/Separator'
+import NewTimerButton from '@/components/NewTimerButton'
 
 const AppHome = async () => {
 	const supabase = createClient()
@@ -22,14 +21,12 @@ const AppHome = async () => {
 					{DateTime.fromMillis(Date.now()).toFormat('LLL dd\', \'EEEE')}
 				</p>
 				<div className="flex justify-between items-end mt-4 gap-4">
-					<h1 className="flex flex-col gap-2 text-5xl truncate">
-						<span className="text-yellow-400">Welcome</span>
-						<span className="text-6xl truncate">{user!.user_metadata.name.split(' ')[0]}</span>
+					<h1 className="flex flex-col gap-2 truncate">
+						<span className="text-yellow-400 text-4xl">Welcome</span>
+						<span className="text-6xl truncate font-medium">{user!.user_metadata.name.split(' ')[0]}</span>
 					</h1>
 
-					<Button size="icon" className="p-6">
-						<Plus className="fill-neutral-950 w-6 h-6" strokeWidth={3} />
-					</Button>
+					<NewTimerButton />
 				</div>
 			</div>
 

@@ -15,14 +15,14 @@ export type Pause = {
 interface CounterProps {
 	initialTime: number,
 	variant?: 'base' | 'list',
-	ended?: boolean,
 	name?: string
+	endedAt?: number,
 }
 
-const Counter = ({ initialTime, variant='base', ended=false, name }: CounterProps) => {
+const Counter = ({ initialTime, variant='base', name, endedAt }: CounterProps) => {
 	const startDate = DateTime.fromMillis(initialTime).toFormat('LLL dd\', \'HH:mm')
 	const [time, setTime] = useState(Date.now())
-	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(initialTime))
+	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(initialTime, endedAt))
 	const [pauses, setPauses] = useState<Pause[]>([])
 	const [isRunning, setIsRunning] = useState(true)
 
@@ -44,7 +44,7 @@ const Counter = ({ initialTime, variant='base', ended=false, name }: CounterProp
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
-			if (!isRunning || ended) return
+			if (!isRunning || endedAt) return
 			setTime(prevTime => {
 				const currentTime = prevTime + 100
 				const seconds = Math.floor((currentTime - initialTime) / 1000)
@@ -111,7 +111,7 @@ const Counter = ({ initialTime, variant='base', ended=false, name }: CounterProp
 				</div>
 			</div>
 		) : (
-			<div className="flex items-center w-full rounded-3xl p-6 bg-neutral-50/5">
+			<div className="flex items-center gap-1 w-full rounded-3xl p-6 bg-neutral-50/5">
 				<p className="w-1/3 text-left truncate opacity-60 font-sans">{name}</p>
 
 				<p className="w-1/3 text-center">
