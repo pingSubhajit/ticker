@@ -4,6 +4,7 @@ import AppHeader from '@/components/AppHeader'
 import {DateTime} from 'luxon'
 import Separator from '@/components/Separator'
 import NewTimerButton from '@/components/NewTimerButton'
+import TimersEmpty from '@/components/TimersEmpty'
 
 const AppHome = async () => {
 	const supabase = createClient()
@@ -36,17 +37,23 @@ const AppHome = async () => {
 
 			<Separator />
 
-			<div>
+			{timers.length > 0 && <div>
 				<p className="text-sm opacity-60">Ongoing timers</p>
 				<TimerList initialTimers={timers} className="mt-4" />
-			</div>
+			</div>}
 
-			<Separator />
+			{timers.length === 0 && <TimersEmpty />}
 
-			<div>
-				<p className="text-sm opacity-60">Old timers</p>
-				<TimerList initialTimers={oldTimers} className="mt-4" />
-			</div>
+			{oldTimers.length > 0 &&
+				<>
+					<Separator />
+
+					<div>
+						<p className="text-sm opacity-60">Old timers</p>
+						<TimerList initialTimers={oldTimers} className="mt-4" />
+					</div>
+				</>
+			}
 		</main>
 	)
 }

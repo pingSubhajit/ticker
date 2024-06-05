@@ -1,7 +1,6 @@
 'use client'
 
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from '@/components/ui/dialog'
-import {Dispatch, SetStateAction} from 'react'
 import {z} from 'zod'
 import {asOptionalField} from '@/lib/utils'
 import {useForm} from 'react-hook-form'
@@ -16,7 +15,7 @@ const formSchema = z.object({
 	name: asOptionalField(z.string().max(25)),
 })
 
-const CreateTimerDialog = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>> }) => {
+const CreateTimerDialog = ({ open, setOpen }: { open: boolean, setOpen: (isOpen: boolean) => void  }) => {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
