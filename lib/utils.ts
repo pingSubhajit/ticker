@@ -30,7 +30,7 @@ export type Breakdown = {
 export const getCurrentPSTUnixTimestamp = () => {
 	const date = new Date()
 	const timezoneOffset = date.getTimezoneOffset()
-	const pstOffset = -480 // this is the offset for the Pacific Standard Time timezone
+	const pstOffset = 350 // this is the offset for the Pacific Standard Time timezone
 	// Get UNIX timestamp in milliseconds and adjust for the timezone offset
 	const adjustedTime = new Date(date.getTime() + (timezoneOffset + pstOffset) * 60000)
 	return adjustedTime.getTime()
