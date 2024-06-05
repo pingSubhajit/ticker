@@ -4,6 +4,7 @@ import './globals.css'
 import {defaultUrl} from '@/lib/constants'
 import {Toaster} from '@/components/ui/sonner'
 import {DialogsProvider} from '@/components/providers/dialog-provider'
+import NextTopLoader from 'nextjs-toploader'
 
 export const metadata: Metadata = {
 	metadataBase: new URL(defaultUrl),
@@ -15,6 +16,9 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
 	return (
 		<html lang="en">
 			<body className="font-ClashDisplay">
+				{/* PROGRESS BAR */}
+				<NextTopLoader showSpinner={false} color="#facc15" />
+			
 				<DialogsProvider>
 					<div className="[&>main]:min-h-svh w-full mx-auto max-w-[600px] px-6 [&>main]:py-6">
 						{children}

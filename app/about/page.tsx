@@ -20,8 +20,8 @@ const AboutPage = async () => {
 				{!user && <Link href="/auth/login">
 					<Button variant="link">Login</Button>
 				</Link>}
-				{user && <Link href="/auth/logout">
-					<Button variant="link">Logout</Button>
+				{user && <Link href="/app">
+					<Button variant="link">App</Button>
 				</Link>}
 			</header>
 

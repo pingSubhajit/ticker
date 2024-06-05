@@ -13,8 +13,8 @@
     --card: 0 0% 100%;
     --card-foreground: 20 14.3% 4.1%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 14.3% 4.1%;
+    --popover: rgb(var(--background-rgb));
+    --popover-foreground:rgb(var(--foreground-rgb));
 
     --primary: 47.9 95.8% 53.1%;
     --primary-foreground: 26 83.3% 14.1%;
@@ -45,8 +45,8 @@
     --card: 20 14.3% 4.1%;
     --card-foreground: 60 9.1% 97.8%;
 
-    --popover: 20 14.3% 4.1%;
-    --popover-foreground: 60 9.1% 97.8%;
+    --popover: rgb(var(--background-rgb));
+    --popover-foreground: rgb(var(--foreground-rgb));
 
     --primary: 47.9 95.8% 53.1%;
     --primary-foreground: 26 83.3% 14.1%;

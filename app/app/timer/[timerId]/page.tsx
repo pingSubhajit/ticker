@@ -19,7 +19,11 @@ const SingleTimer = async ({ params: { timerId } }: { params: { timerId: number 
 
 	return (
 		<main className="flex flex-col justify-between gap-8">
-			<AppHeader title={timer.name || `Timer no. ${timer.id}`} profileUrl={user!.user_metadata.avatar_url}/>
+			<AppHeader
+				title={timer.name || `Timer no. ${timer.id}`}
+				profileUrl={user!.user_metadata.avatar_url}
+				backLink="/app"
+			/>
 
 			<Counter initialTime={timer.started_at} name={timer.name} id={timer.id} endedAt={timer.ended_at} />
 
