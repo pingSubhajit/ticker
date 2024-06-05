@@ -58,7 +58,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 	const restartCounting = async () => {
 		setLoading({ ...loading, restart: true })
 		try {
-			const restartedTimer = await restartTimer(id)
+			const restartedTimer = await restartTimer(id, getCurrentPSTUnixTimestamp())
 			toast.success(`Timer "${restartedTimer.name}" restarted`)
 		} catch (error: any) {
 			toast.error(error.message || 'Could not restart timer')
@@ -69,7 +69,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 	const stopCounting = async () => {
 		setLoading({ ...loading, stop: true })
 		try {
-			const stoppedTimer = await stopTimer(id)
+			const stoppedTimer = await stopTimer(id, getCurrentPSTUnixTimestamp())
 			toast.success(`Timer "${stoppedTimer.name}" stopped`)
 		} catch (error: any) {
 			toast.error(error.message || 'Could not stop timer')

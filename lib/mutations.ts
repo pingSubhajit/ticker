@@ -6,14 +6,14 @@ import {revalidatePath} from 'next/cache'
 import {redirect} from 'next/navigation'
 import {getCurrentPSTUnixTimestamp} from '@/lib/utils'
 
-export const createTimer = async (name?: string) => {
+export const createTimer = async (name?: string, timestamp?: number) => {
 	const supabase = createClient()
 
 	const { data: timer, error } = await supabase
 		.from('timer')
 		.insert({
 			name: name || 'Unnamed timer',
-			started_at: getCurrentPSTUnixTimestamp()
+			started_at: timestamp || getCurrentPSTUnixTimestamp()
 		}).select().single()
 
 	if (error) {
@@ -43,13 +43,13 @@ export const updateName = async (timerId: number, name: string) => {
 	return timer as Timer
 }
 
-export const stopTimer = async (timerId: number) => {
+export const stopTimer = async (timerId: number, timestamp?: number) => {
 	const supabase = createClient()
 
 	const { data: timer, error } = await supabase
 		.from('timer')
 		.update({
-			ended_at: getCurrentPSTUnixTimestamp()
+			ended_at: timestamp || getCurrentPSTUnixTimestamp()
 		}).eq('id', timerId).select().single()
 
 	if (error) {
@@ -62,13 +62,13 @@ export const stopTimer = async (timerId: number) => {
 	return timer as Timer
 }
 
-export const restartTimer = async (timerId: number) => {
+export const restartTimer = async (timerId: number, timestamp?: number) => {
 	const supabase = createClient()
 
 	const { data: timer, error } = await supabase
 		.from('timer')
 		.update({
-			started_at: getCurrentPSTUnixTimestamp(),
+			started_at: timestamp || getCurrentPSTUnixTimestamp(),
 			ended_at: null
 		}).eq('id', timerId).select().single()
 
