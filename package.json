@@ -34,6 +34,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.13",
     "@types/luxon": "^3.4.2",
     "@types/node": "^20",
     "@types/react": "^18",
