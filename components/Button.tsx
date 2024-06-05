@@ -15,9 +15,24 @@ const button = cva('rounded-2xl transition', {
 			secondary: [
 				'bg-transparent',
 				'text-yellow-400',
-				'border border-yellow-400',
+				'border-2 border-yellow-400',
 				'hover:bg-yellow-400/10',
-			]
+			],
+			ghost: [
+				'bg-transparent',
+				'text-yellow-400',
+				'border border-transparent',
+				'hover:bg-yellow-400/10',
+			],
+			link: [
+				'bg-transparent',
+				'text-neutral-300',
+				'hover:text-neutral-50',
+				'border border-transparent',
+				'hover:underline',
+				'p-0',
+				'underline-offset-4'
+			],
 		},
 		size: {
 			small: ['text-sm', 'py-1', 'px-2'],
@@ -33,7 +48,7 @@ const button = cva('rounded-2xl transition', {
 })
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	variant?: 'primary' | 'secondary'
+	variant?: 'primary' | 'secondary' | 'ghost' | 'link'
 	size?: 'small' | 'base' | 'full' | 'icon'
 	className?: string,
 	children: ReactNode

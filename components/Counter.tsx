@@ -100,33 +100,33 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 					<p className="text-center text-9xl">
 						{(breakdown.hours % 24).toString().padStart(2, '0')}
 					</p>
-					<p className="absolute -right-2 font-medium pb-4 translate-x-4">h</p>
+					<p className="absolute right-16 font-medium pb-4 translate-x-4">h</p>
 				</div>
 				<div
 					className={cn('flex items-end justify-center relative', breakdown.hours === 0 && breakdown.minutes !== 0 && 'text-yellow-400')}>
 					<p className="text-center text-9xl">
 						{(breakdown.minutes % 60).toString().padStart(2, '0')}
 					</p>
-					<p className="absolute -right-2 font-medium pb-4 translate-x-4">m</p>
+					<p className="absolute right-16 font-medium pb-4 translate-x-4">m</p>
 				</div>
 				<div
 					className={cn('flex items-end justify-center relative', breakdown.hours === 0 && breakdown.minutes === 0 && 'text-yellow-400')}>
 					<p className="text-center text-9xl">
 						{(breakdown.seconds % 60).toString().padStart(2, '0')}
 					</p>
-					<p className="absolute -right-2 font-medium pb-4 translate-x-4">s</p>
+					<p className="absolute right-16 font-medium pb-4 translate-x-4">s</p>
 				</div>
 
 				<div className="flex items-center mt-8 gap-2 justify-center">
-					{id && !endedAt && <Button size="icon" onClick={() => stopTimer(id)}>
-						<Square className="fill-neutral-950 w-8 h-8" />
+					{id && !endedAt && <Button size="icon" onClick={() => stopTimer(id)} variant="secondary">
+						<Square className="fill-yellow-400 w-8 h-8" />
 					</Button>}
 
 					{id && endedAt && <Button size="icon" onClick={() => restartTimer(id)}>
 						<RotateCw className="w-8 h-8" strokeWidth={3} />
 					</Button>}
 
-					{id && endedAt && <Button size="icon" onClick={() => removeTimer(true)}>
+					{id && endedAt && <Button size="icon" onClick={() => removeTimer(true)} variant="secondary">
 						<Trash2 className="w-8 h-8" strokeWidth={3} />
 					</Button>}
 

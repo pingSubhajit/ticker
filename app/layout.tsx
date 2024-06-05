@@ -16,7 +16,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
 		<html lang="en">
 			<body className="font-ClashDisplay">
 				<DialogsProvider>
-					<div className="[&>main]:min-h-svh w-full mx-auto max-w-[700px] px-6 [&>main]:py-6">
+					<div className="[&>main]:min-h-svh w-full mx-auto max-w-[600px] px-6 [&>main]:py-6">
 						{children}
 					</div>
 				</DialogsProvider>
