@@ -43,7 +43,7 @@ const TimerList = ({ initialTimers, className }: { initialTimers?: Timer[], clas
 	}
 
 	return (
-		<div className={cn('w-full flex flex-col gap-3', className)}>
+		<ul className={cn('w-full flex flex-col gap-3', className)} role="list">
 			{optimisticTimers?.map((timer) => (
 				<Link href={`/app/timer/${timer.id}`} key={timer.id}>
 					<Counter
@@ -56,7 +56,7 @@ const TimerList = ({ initialTimers, className }: { initialTimers?: Timer[], clas
 					/>
 				</Link>
 			))}
-		</div>
+		</ul>
 	)
 }
 

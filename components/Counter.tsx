@@ -105,7 +105,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 				<div
 					className={cn('flex items-end justify-center relative', breakdown.hours === 0 && breakdown.minutes !== 0 && 'text-yellow-400')}>
 					<p className="text-center text-9xl">
-						{(breakdown.minutes % 60)}
+						{(breakdown.minutes % 60).toString().padStart(2, '0')}
 					</p>
 					<p className="absolute -right-2 font-medium pb-4 translate-x-4">m</p>
 				</div>
@@ -140,7 +140,10 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 				</div>
 			</div>
 		) : (
-			<div className="flex items-center gap-1 w-full rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group">
+			<li
+				role="listitem"
+				className="flex items-center gap-1 w-full rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group"
+			>
 				<p className="w-1/3 text-left truncate opacity-60 font-sans">{name}</p>
 
 				<p className="w-1/3 text-center">
@@ -169,7 +172,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 				>
 					<Trash2 className="w-6 h-6" strokeWidth={2} />
 				</Button>
-			</div>
+			</li>
 		)
 	)
 }
