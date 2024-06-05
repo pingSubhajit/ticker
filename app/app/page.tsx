@@ -10,7 +10,11 @@ const AppHome = async () => {
 
 	const {data: { user }} = await supabase.auth.getUser()
 
-	const {data: timers, error} = await supabase.from('timer').select('*') as unknown as { data: Timer[], error: any }
+	const {data: timers, error} = await supabase.from('timer').select('*').is('ended_at', null)
+		.order('created_at', { ascending: false }) as unknown as { data: Timer[], error: any }
+
+	const {data: oldTimers, error: oldTimersError} = await supabase.from('timer').select('*').not('ended_at', 'is', null)
+		.order('created_at', { ascending: false }) as unknown as { data: Timer[], error: any }
 
 	return (
 		<main className="flex flex-col gap-16">
@@ -35,6 +39,13 @@ const AppHome = async () => {
 			<div>
 				<p className="text-sm opacity-60">Ongoing timers</p>
 				<TimerList timers={timers} className="mt-4" />
+			</div>
+
+			<Separator />
+
+			<div>
+				<p className="text-sm opacity-60">Old timers</p>
+				<TimerList timers={oldTimers} className="mt-4" />
 			</div>
 		</main>
 	)

@@ -7,13 +7,10 @@ import {revalidatePath} from 'next/cache'
 export const createTimer = async (name?: string) => {
 	const supabase = createClient()
 
-	const {data: { user }} = await supabase.auth.getUser()
-
 	const { data: timer, error } = await supabase
 		.from('timer')
 		.insert({
 			name: name || 'Unnamed timer',
-			user: user!.id,
 			started_at: Date.now()
 		}).select().single()
 

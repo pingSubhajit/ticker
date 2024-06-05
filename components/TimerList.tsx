@@ -15,10 +15,10 @@ export type Timer = {
 	user: string
 }
 
-const TimerList = ({ timers, className }: { timers: Timer[], className?: string }) => {
+const TimerList = ({ timers, className }: { timers?: Timer[], className?: string }) => {
 	return (
 		<div className={cn('w-full flex flex-col gap-3', className)}>
-			{timers.map((timer) => (
+			{timers?.map((timer) => (
 				<Link href={`/app/timer/${timer.id}`} key={timer.id}>
 					<Counter
 						initialTime={timer.started_at}
