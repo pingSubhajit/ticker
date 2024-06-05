@@ -3,8 +3,20 @@ import Image from 'next/image'
 import Button from '@/components/Button'
 import Link from 'next/link'
 import {createClient} from '@/utils/supabase/server'
-import {githubRepo} from '@/lib/constants'
+import {githubRepo, portfolio} from '@/lib/constants'
 import Separator from '@/components/Separator'
+import {Metadata} from 'next'
+
+export const metadata: Metadata = {
+	title: 'About Ticker - Motivation, Creator, License, and Credits',
+	description: 'Learn about the motivation behind Ticker, a mobile-first, long-duration, cloud-synced stopwatch app. ' +
+		'Discover the creator, the MIT license, and credits. Ticker is free, open-source, and designed for ' +
+		'long-term time tracking.',
+	keywords: ['Ticker', 'about Ticker', 'stopwatch motivation', 'Ticker creator', 'Ticker license', 'MIT license',
+		'stopwatch credits', 'open source stopwatch', 'free stopwatch app', 'long duration stopwatch',
+		'cloud-synced stopwatch'
+	]
+}
 
 const AboutPage = async () => {
 	const supabase = createClient()
@@ -70,7 +82,9 @@ const AboutPage = async () => {
 
 			<footer className="flex justify-between items-center w-full">
 				<p className="mt-2 text-sm font-medium text-neutral-400 italic">v0.01</p>
-				<p className="mt-2 text-sm font-medium text-neutral-400 text-right">Subhajit</p>
+				<a href={portfolio} target="_blank" className="text-yellow-400 hover:text-yellow-500 transition">
+					<p className="mt-2 text-sm font-medium text-right">Subhajit</p>
+				</a>
 			</footer>
 		</main>
 	)

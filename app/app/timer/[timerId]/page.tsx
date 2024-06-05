@@ -5,8 +5,30 @@ import {notFound} from 'next/navigation'
 import AppHeader from '@/components/AppHeader'
 import {Timer} from '@/components/TimerList'
 import {getInitialBreakdown} from '@/lib/utils'
+import {Metadata, ResolvingMetadata} from 'next'
 
 const Counter = dynamic(() => import('@/components/Counter'), {ssr: false, loading: () => <CounterLoading />})
+
+export async function generateMetadata(
+	{ params }: { params: { timerId: string } }, parent: ResolvingMetadata)
+	: Promise<Metadata>
+{
+	// read route params
+	const timerId = params.timerId
+
+	// fetch data
+	const supabase = createClient()
+	const {data: timer, error} = await supabase.from('timer').select().eq('id', timerId).single() as unknown as {
+		data: Timer,
+		error: any
+	}
+
+	return {
+		title: timer.name || `Timer no. ${timer.id}`,
+		description: `Timer no. ${timer.id} started ${getInitialBreakdown(timer.started_at).days} days ago. See your 
+		timer live. Manage your timers with easily.`,
+	}
+}
 
 const SingleTimer = async ({ params: { timerId } }: { params: { timerId: number } }) => {
 	const supabase = createClient()

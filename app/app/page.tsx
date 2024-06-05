@@ -5,6 +5,14 @@ import {DateTime} from 'luxon'
 import Separator from '@/components/Separator'
 import NewTimerButton from '@/components/NewTimerButton'
 import TimersEmpty from '@/components/TimersEmpty'
+import {Metadata} from 'next'
+
+export const metadata: Metadata = {
+	title: 'Ticker - Long Duration Stopwatch',
+	description: 'Manage all your long-duration stopwatches with Ticker. Create new stopwatches, delete existing ones, ' +
+		'and access them from anywhere. Ticker is a mobile-first, cloud-synced stopwatch app that is free and ' +
+		'open-source with an MIT license.'
+}
 
 const AppHome = async () => {
 	const supabase = createClient()
