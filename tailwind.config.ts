@@ -18,6 +18,11 @@ const config = {
 			},
 		},
 		extend: {
+			screens: {
+				'hover-hover': {
+					'raw': '(hover: hover)'
+				}
+			},
 			fontFamily: {
 				ClashDisplay: ['Clash Display', 'sans-serif']
 			},

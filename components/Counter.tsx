@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from 'react'
 import {Breakdown, cn, getInitialBreakdown} from '@/lib/utils'
-import {Pause, Play, RotateCw, Square} from 'lucide-react'
+import {Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Button from '@/components/Button'
 import {stopTimer} from '@/lib/mutations'
@@ -27,6 +27,10 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProp
 	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(initialTime, endedAt))
 	const [pauses, setPauses] = useState<Pause[]>([])
 	const [isRunning, setIsRunning] = useState(true)
+
+	const deleteTimer = () => {
+		console.log('delete')
+	}
 
 	const pauseCounting = () => {
 		const pauseId = pauses.length + 1
@@ -117,7 +121,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProp
 				</div>
 			</div>
 		) : (
-			<div className="flex items-center gap-1 w-full rounded-3xl p-6 bg-neutral-50/5">
+			<div className="flex items-center gap-1 w-full rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group">
 				<p className="w-1/3 text-left truncate opacity-60 font-sans">{name}</p>
 
 				<p className="w-1/3 text-center">
@@ -133,6 +137,19 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt }: CounterProp
 				</p>
 
 				<p className="w-1/3 text-right opacity-60 font-sans">{breakdown.days}d ago</p>
+
+				<Button
+					size="icon"
+					className="absolute top-0 bottom-0 h-full right-0 translate-x-[100%]
+					hover-hover:group-hover:translate-x-0 aspect-square !p-0 flex items-center justify-center rounded-none"
+					onClick={(event) => {
+						event.stopPropagation()
+						event.preventDefault()
+						deleteTimer()
+					}}
+				>
+					<Trash2 className="w-6 h-6" strokeWidth={2} />
+				</Button>
 			</div>
 		)
 	)
