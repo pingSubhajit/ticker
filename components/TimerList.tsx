@@ -4,7 +4,12 @@ import {CounterLoading, Pause} from '@/components/Counter'
 import dynamic from 'next/dynamic'
 import {cn} from '@/lib/utils'
 import Link from 'next/link'
-import {startTransition, useEffect, useOptimistic, useState} from 'react'
+import {startTransition, useEffect, useState} from 'react'
+import {createClient} from '@/utils/supabase/client'
+import {
+	REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
+	RealtimePostgresChangesFilter
+} from '@supabase/realtime-js/src/RealtimeChannel'
 
 const Counter = dynamic(() => import('@/components/Counter'), {ssr: false, loading: () => <CounterLoading variant="list" />})
 
@@ -18,40 +23,72 @@ export type Timer = {
 	user: string
 }
 
-const TimerList = ({ initialTimers, className }: { initialTimers?: Timer[], className?: string }) => {
-	const [timers, setTimers] = useState(initialTimers)
-	const [optimisticTimers, setOptimisticTimers] = useOptimistic(
-		timers,
-		(_, newTimers: Timer[]) => newTimers
-	)
+interface TimerListProps {
+	initialTimers: Timer[],
+	supabaseSubscribeConfig: Record<string, string>,
+	filter: (timer: Timer) => boolean,
+	channelName: string,
+	className?: string
+}
 
-	useEffect(() => {
-		setTimers(initialTimers)
-		startTransition(() => {
-			setOptimisticTimers(initialTimers || [])
-		})
-	}, [initialTimers])
+const TimerList = ({ initialTimers, supabaseSubscribeConfig, channelName, filter, className }: TimerListProps) => {
+	const [timers, setTimers] = useState(initialTimers)
 
 	const onDelete = async (id: number, next: () => Promise<void>) => {
-		const newTimers = optimisticTimers!.filter((timer) => timer.id !== id)
-		startTransition(() => {
-			setOptimisticTimers(newTimers)
-		})
-
 		await next()
-		setTimers(newTimers)
 	}
+
+	const supabase = createClient()
+
+	useEffect(() => {
+		const channel = supabase
+			.channel(channelName)
+			.on(
+				'postgres_changes',
+				supabaseSubscribeConfig as RealtimePostgresChangesFilter<`${REALTIME_POSTGRES_CHANGES_LISTEN_EVENT.ALL}`>,
+				(payload) => {
+					switch (payload.eventType) {
+					case 'INSERT':
+						if (!filter(payload.new as Timer)) return
+						startTransition(() => {
+							setTimers((prevTimers) => [payload.new as Timer, ...prevTimers] as Timer[])
+						})
+						break
+
+					case 'DELETE':
+						startTransition(() => {
+							setTimers((prevTimers) => prevTimers.filter((timer) => timer.id !== payload.old.id))
+						})
+						break
+
+					case 'UPDATE':
+						if (!filter(payload.new as Timer)) {
+							return setTimers((prevTimers) => prevTimers.filter((timer) => timer.id !== payload.old.id))
+						}
+
+						startTransition(() => {
+							setTimers((prevTimers) => {
+								if (prevTimers.find((timer) => timer.id === payload.new.id)) {
+									return prevTimers.map((timer) => timer.id === payload.new.id ? payload.new as Timer : timer)
+								} else {
+									return [payload.new as Timer, ...prevTimers]
+								}
+							})
+						})
+						break
+					}
+				}
+			)
+			.subscribe()
+	}, [])
 
 	return (
 		<ul className={cn('w-full flex flex-col gap-3', className)} role="list">
-			{optimisticTimers?.map((timer) => (
+			{timers?.map((timer) => (
 				<Link href={`/app/timer/${timer.id}`} key={timer.id}>
 					<Counter
-						initialTime={timer.started_at}
+						initialTimer={timer}
 						variant="list"
-						name={timer.name}
-						endedAt={timer.ended_at}
-						id={timer.id}
 						onDelete={onDelete}
 					/>
 				</Link>
