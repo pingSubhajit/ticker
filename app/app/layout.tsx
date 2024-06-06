@@ -2,6 +2,7 @@ import {ReactNode} from 'react'
 import {createClient} from '@/utils/supabase/server'
 import {redirect} from 'next/navigation'
 import KeybindProvider from '@/components/providers/keybind-provider'
+import HelpButton from '@/components/HelpButton'
 
 const AppLayout = async ({ children }: { children: ReactNode }) => {
 	const supabase = createClient()
@@ -16,6 +17,8 @@ const AppLayout = async ({ children }: { children: ReactNode }) => {
 		<>
 			<KeybindProvider>
 				{children}
+
+				<HelpButton />
 			</KeybindProvider>
 		</>
 	)

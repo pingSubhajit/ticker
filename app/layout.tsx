@@ -5,6 +5,7 @@ import {defaultUrl} from '@/lib/constants'
 import {Toaster} from '@/components/ui/sonner'
 import {DialogsProvider} from '@/components/providers/dialog-provider'
 import NextTopLoader from 'nextjs-toploader'
+import GlobalKeybindProvider from '@/components/providers/global-keybind-provider'
 
 export const metadata: Metadata = {
 	metadataBase: new URL(defaultUrl),
@@ -25,9 +26,11 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
 				<NextTopLoader showSpinner={false} color="#facc15" />
 			
 				<DialogsProvider>
-					<div className="[&>main]:min-h-svh w-full mx-auto max-w-[600px] px-6 [&>main]:py-6">
-						{children}
-					</div>
+					<GlobalKeybindProvider>
+						<div className="[&>main]:min-h-svh w-full mx-auto max-w-[600px] px-6 [&>main]:py-6">
+							{children}
+						</div>
+					</GlobalKeybindProvider>
 				</DialogsProvider>
 
 				<Toaster />
