@@ -1,7 +1,7 @@
 'use client'
 
 import {useEffect, useState} from 'react'
-import {Breakdown, cn, getCurrentPSTUnixTimestamp, getInitialBreakdown} from '@/lib/utils'
+import {Breakdown, cn, getCurrentUnixTimestamp, getInitialBreakdown} from '@/lib/utils'
 import {LoaderCircle, Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
 import {DateTime} from 'luxon'
 import Button from '@/components/Button'
@@ -41,10 +41,14 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 				(payload: {new: Timer}) => setTimer(payload.new)
 			)
 			.subscribe()
+
+		return () => {
+			channel.unsubscribe()
+		}
 	}, [])
 
 	const startDate = DateTime.fromMillis(timer.started_at).toFormat('LLL dd\', \'HH:mm')
-	const [time, setTime] = useState(getCurrentPSTUnixTimestamp())
+	const [time, setTime] = useState(getCurrentUnixTimestamp())
 	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(timer.started_at, timer.ended_at))
 	const [pauses, setPauses] = useState<Pause[]>([])
 	const [isRunning, setIsRunning] = useState(true)
@@ -77,7 +81,7 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 	const restartCounting = async () => {
 		setLoading({ ...loading, restart: true })
 		try {
-			const restartedTimer = await restartTimer(timer.id, getCurrentPSTUnixTimestamp())
+			const restartedTimer = await restartTimer(timer.id, getCurrentUnixTimestamp())
 			toast.success(`Timer "${restartedTimer.name}" restarted`)
 		} catch (error: any) {
 			toast.error(error.message || 'Could not restart timer')
@@ -88,7 +92,7 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 	const stopCounting = async () => {
 		setLoading({ ...loading, stop: true })
 		try {
-			const stoppedTimer = await stopTimer(timer.id, getCurrentPSTUnixTimestamp())
+			const stoppedTimer = await stopTimer(timer.id, getCurrentUnixTimestamp())
 			toast.success(`Timer "${stoppedTimer.name}" stopped`)
 		} catch (error: any) {
 			toast.error(error.message || 'Could not stop timer')
@@ -98,13 +102,13 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 
 	const pauseCounting = () => {
 		const pauseId = pauses.length + 1
-		const pausedAt = getCurrentPSTUnixTimestamp()
+		const pausedAt = getCurrentUnixTimestamp()
 		setPauses([...pauses, { pauseId, pausedAt }])
 		setIsRunning(false)
 	}
 
 	const resumeCounting = () => {
-		const resumedAt = getCurrentPSTUnixTimestamp()
+		const resumedAt = getCurrentUnixTimestamp()
 		const latestPause = pauses[pauses.length - 1]
 		latestPause.resumedAt = resumedAt
 		const updatedPauses = pauses.map(pause => pause.pauseId === latestPause.pauseId ? latestPause : pause)
@@ -112,11 +116,12 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 		setIsRunning(true)
 	}
 
+	// Starts the timer counting interval when the component mounts
 	useEffect(() => {
 		const intervalId = setInterval(() => {
 			if (!isRunning || timer.ended_at) return
 			setTime(prevTime => {
-				const currentTime = !isRunning ? prevTime : getCurrentPSTUnixTimestamp() + 100
+				const currentTime = !isRunning ? prevTime : getCurrentUnixTimestamp() + 100
 				const seconds = Math.floor((currentTime - timer.started_at) / 1000)
 				const minutes = Math.floor(seconds / 60)
 				const hours = Math.floor(minutes / 60)
@@ -128,16 +133,17 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 		return () => clearInterval(intervalId) // Cleanup function to clear the interval when component unmounts
 	}, [isRunning, timer.ended_at]) // Empty dependency array ensures the effect runs only once when component mounts
 
+	// Sets the time to the current unix timestamp when the tab is focused
 	useEffect(() => {
 		const continueCounterOnFocusIn = () => {
 			if (document.visibilityState == 'visible' && isRunning) {
-				setTime(getCurrentPSTUnixTimestamp())
+				setTime(getCurrentUnixTimestamp())
 			}
 		}
 
 		document.addEventListener('visibilitychange', continueCounterOnFocusIn)
 
-		return () => {document.removeEventListener('visibilitychange', continueCounterOnFocusIn)}
+		return () => {document.removeEventListener('visibilitychange', continueCounterOnFocusIn)} // Cleanup function
 	}, [isRunning])
 
 	useHotkeys([

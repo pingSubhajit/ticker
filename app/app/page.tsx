@@ -5,7 +5,7 @@ import {DateTime} from 'luxon'
 import Separator from '@/components/Separator'
 import NewTimerButton from '@/components/NewTimerButton'
 import {Metadata} from 'next'
-import {getCurrentPSTUnixTimestamp} from '@/lib/utils'
+import {getCurrentUnixTimestamp} from '@/lib/utils'
 import OldTimerList from '@/components/OldTimerList'
 import OngoingTimerList from '@/components/OngoingTimerList'
 
@@ -33,7 +33,7 @@ const AppHome = async () => {
 
 			<div>
 				<p className="text-sm opacity-60">
-					{DateTime.fromMillis(getCurrentPSTUnixTimestamp()).toFormat('LLL dd\', \'EEEE')}
+					{DateTime.fromMillis(getCurrentUnixTimestamp()).toFormat('LLL dd\', \'EEEE')}
 				</p>
 				<div className="flex justify-between items-end mt-4 gap-4">
 					<h1 className="flex flex-col gap-2 truncate">

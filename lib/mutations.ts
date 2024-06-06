@@ -4,7 +4,7 @@ import {createClient} from '@/utils/supabase/server'
 import {Timer} from '@/components/TimerList'
 import {revalidatePath} from 'next/cache'
 import {redirect} from 'next/navigation'
-import {getCurrentPSTUnixTimestamp} from '@/lib/utils'
+import {getCurrentUnixTimestamp} from '@/lib/utils'
 
 export const createTimer = async (name?: string, timestamp?: number) => {
 	const supabase = createClient()
@@ -13,7 +13,7 @@ export const createTimer = async (name?: string, timestamp?: number) => {
 		.from('timer')
 		.insert({
 			name: name || 'Unnamed timer',
-			started_at: timestamp || getCurrentPSTUnixTimestamp()
+			started_at: timestamp || getCurrentUnixTimestamp()
 		}).select().single()
 
 	if (error) {
@@ -49,7 +49,7 @@ export const stopTimer = async (timerId: number, timestamp?: number) => {
 	const { data: timer, error } = await supabase
 		.from('timer')
 		.update({
-			ended_at: timestamp || getCurrentPSTUnixTimestamp()
+			ended_at: timestamp || getCurrentUnixTimestamp()
 		}).eq('id', timerId).select().single()
 
 	if (error) {
@@ -68,7 +68,7 @@ export const restartTimer = async (timerId: number, timestamp?: number) => {
 	const { data: timer, error } = await supabase
 		.from('timer')
 		.update({
-			started_at: timestamp || getCurrentPSTUnixTimestamp(),
+			started_at: timestamp || getCurrentUnixTimestamp(),
 			ended_at: null
 		}).eq('id', timerId).select().single()
 

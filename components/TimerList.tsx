@@ -79,6 +79,10 @@ const TimerList = ({ timers, setTimers, supabaseSubscribeConfig, channelName, fi
 				}
 			)
 			.subscribe()
+
+		return () => {
+			channel.unsubscribe
+		}
 	}, [])
 
 	return (

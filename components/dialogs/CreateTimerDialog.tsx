@@ -2,7 +2,7 @@
 
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from '@/components/ui/dialog'
 import {z} from 'zod'
-import {asOptionalField, getCurrentPSTUnixTimestamp} from '@/lib/utils'
+import {asOptionalField, getCurrentUnixTimestamp} from '@/lib/utils'
 import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form'
@@ -26,7 +26,7 @@ const CreateTimerDialog = ({ open, setOpen }: { open: boolean, setOpen: (isOpen:
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			const timer = await createTimer(values.name, getCurrentPSTUnixTimestamp())
+			const timer = await createTimer(values.name, getCurrentUnixTimestamp())
 			form.reset()
 			toast.success(`Timer "${timer.name}" created`)
 			setOpen(false)
