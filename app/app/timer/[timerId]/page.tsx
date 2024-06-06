@@ -6,6 +6,7 @@ import AppHeader from '@/components/AppHeader'
 import {Timer} from '@/components/TimerList'
 import {getInitialBreakdown} from '@/lib/utils'
 import {Metadata, ResolvingMetadata} from 'next'
+import WaveDecoration from '@/components/WaveDecoration'
 
 const Counter = dynamic(() => import('@/components/Counter'), {ssr: false, loading: () => <CounterLoading />})
 
@@ -50,6 +51,8 @@ const SingleTimer = async ({ params: { timerId } }: { params: { timerId: number 
 			<Counter initialTime={timer.started_at} name={timer.name} id={timer.id} endedAt={timer.ended_at} />
 
 			<p className="text-center opacity-60 font-sans">Started {getInitialBreakdown(timer.started_at).days}d ago</p>
+
+			<WaveDecoration />
 		</main>
 	)
 }

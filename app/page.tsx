@@ -4,6 +4,7 @@ import Button from '@/components/Button'
 import {createClient} from '@/utils/supabase/server'
 import {redirect} from 'next/navigation'
 import Link from 'next/link'
+import WaveDecoration from '@/components/WaveDecoration'
 
 export default async function Home() {
 	const supabase = createClient()
@@ -17,7 +18,7 @@ export default async function Home() {
 	}
 
 	return (
-		<main className="flex flex-col items-start justify-end gap-8 lg:gap-16 !py-24 lg:justify-center">
+		<main className="flex flex-col items-start justify-end gap-8 lg:gap-16 !md:py-24 lg:justify-center">
 			<div>
 				<h1 className="flex flex-col text-5xl leading-[1.15] lg:flex-row lg:flex-wrap lg:justify-center">
 					<span className="text-yellow-400 whitespace-nowrap">Measure</span>
@@ -35,12 +36,14 @@ export default async function Home() {
 			<Image src={stopwatch} alt="Stopwatch image used for illustrative purposes"
 			       className="mt-8 mx-auto max-w-48"/>
 
-			<div className="space-y-2 w-full lg:flex lg:items-center lg:gap-2 lg:space-y-0">
+			<div className="flex flex-col gap-2 items-center lg:flex-row w-full">
 				<Link href="/auth/login" className="w-full"><Button size="full">Get started</Button></Link>
 				<Link href="/about" className="w-full">
 					<Button size="full" variant="secondary">About Ticker and the creator</Button>
 				</Link>
 			</div>
+
+			<WaveDecoration double={true} />
 		</main>
 	)
 }
