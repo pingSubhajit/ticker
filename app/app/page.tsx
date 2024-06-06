@@ -4,7 +4,6 @@ import AppHeader from '@/components/AppHeader'
 import {DateTime} from 'luxon'
 import Separator from '@/components/Separator'
 import NewTimerButton from '@/components/NewTimerButton'
-import TimersEmpty from '@/components/TimersEmpty'
 import {Metadata} from 'next'
 import {getCurrentPSTUnixTimestamp} from '@/lib/utils'
 import OldTimerList from '@/components/OldTimerList'
@@ -48,23 +47,9 @@ const AppHome = async () => {
 
 			<Separator />
 
-			{timers.length > 0 && <div>
-				<p className="text-sm opacity-60">Ongoing timers</p>
-				<OngoingTimerList ongoingTimers={timers} />
-			</div>}
-
-			{timers.length === 0 && <TimersEmpty />}
-
-			{oldTimers.length > 0 &&
-				<>
-					<Separator />
-
-					<div>
-						<p className="text-sm opacity-60">Old timers</p>
-						<OldTimerList oldTimers={oldTimers} />
-					</div>
-				</>
-			}
+			<OngoingTimerList ongoingTimers={timers} />
+			
+			<OldTimerList oldTimers={oldTimers} />
 		</main>
 	)
 }

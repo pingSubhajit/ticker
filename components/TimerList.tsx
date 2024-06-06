@@ -4,7 +4,7 @@ import {CounterLoading, Pause} from '@/components/Counter'
 import dynamic from 'next/dynamic'
 import {cn} from '@/lib/utils'
 import Link from 'next/link'
-import {startTransition, useEffect, useState} from 'react'
+import {Dispatch, SetStateAction, startTransition, useEffect} from 'react'
 import {createClient} from '@/utils/supabase/client'
 import {
 	REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
@@ -24,16 +24,15 @@ export type Timer = {
 }
 
 interface TimerListProps {
-	initialTimers: Timer[],
+	timers: Timer[],
+	setTimers: Dispatch<SetStateAction<Timer[]>>,
 	supabaseSubscribeConfig: Record<string, string>,
 	filter: (timer: Timer) => boolean,
 	channelName: string,
 	className?: string
 }
 
-const TimerList = ({ initialTimers, supabaseSubscribeConfig, channelName, filter, className }: TimerListProps) => {
-	const [timers, setTimers] = useState(initialTimers)
-
+const TimerList = ({ timers, setTimers, supabaseSubscribeConfig, channelName, filter, className }: TimerListProps) => {
 	const onDelete = async (id: number, next: () => Promise<void>) => {
 		await next()
 	}
