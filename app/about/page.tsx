@@ -40,8 +40,8 @@ const AboutPage = async () => {
 			<div>
 				<h2 className="text-lg text-neutral-200 font-medium">Ticker: Long duration stopwatch</h2>
 				<p className="mt-2 text-[15px] font-medium text-neutral-400 font-sans leading-relaxed">
-					A small tool for creating stopwatch timers that can run for days, weeks, or even months. All synced
-					in real-time across multiple devices. Uses simple algorithm and can sometimes drift by a one or two
+					A small tool for creating stopwatch timers that can run for days, months, or even years. All synced
+					in real-time across multiple devices. Uses simple algorithm and seldom drifts by hardly one or two
 					seconds.
 				</p>
 			</div>

@@ -21,7 +21,8 @@ const HelpDialog = ({ open, setOpen }: { open: boolean, setOpen: (isOpen: boolea
 					<h4>Usage</h4>
 					<p>
 						The timer starts counting the moment you create the timer and stops the moment you press stop.
-						That means even in case of network delays, the timer will be accurate.
+						That means even in case of network delays, the timer will be accurate. Also any updates will be
+						synced across all your devices in real-time.
 					</p>
 
 					<h4>Shortcuts</h4>
