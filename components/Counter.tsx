@@ -7,6 +7,7 @@ import {DateTime} from 'luxon'
 import Button from '@/components/Button'
 import {deleteTimer, restartTimer, stopTimer} from '@/lib/mutations'
 import {toast} from 'sonner'
+import {useHotkeys} from '@mantine/hooks'
 
 export type Pause = {
 	pauseId: number
@@ -120,6 +121,15 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 
 		return () => {document.removeEventListener('visibilitychange', continueCounterOnFocusIn)}
 	}, [isRunning])
+
+	useHotkeys([
+		['s', () => id && !endedAt && stopCounting()],
+		['r', () => id && endedAt && restartCounting()],
+		['space', () => isRunning ? pauseCounting() : resumeCounting()],
+		['k', () => isRunning ? pauseCounting() : resumeCounting()],
+		['p', () => isRunning ? pauseCounting() : resumeCounting()],
+		['mod+backspace', () => removeTimer(true)]
+	])
 
 	return (
 		variant === 'base' ? (
