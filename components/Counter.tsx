@@ -41,7 +41,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 		const deleteTimerFunction = async () => {
 			try {
 				const deletedTimer = await deleteTimer(id, withRedirect)
-				toast.success(`Timer "${deletedTimer?.name}" deleted`)
+				toast.success(`Timer "${deletedTimer ? deletedTimer.name : `Timer no. ${id}`}" deleted`)
 			} catch (error: any) {
 				toast.error(error.message || 'Could not delete timer')
 			}
@@ -123,12 +123,12 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 	}, [isRunning])
 
 	useHotkeys([
-		['s', () => id && !endedAt && stopCounting()],
-		['r', () => id && endedAt && restartCounting()],
-		['space', () => isRunning ? pauseCounting() : resumeCounting()],
-		['k', () => isRunning ? pauseCounting() : resumeCounting()],
-		['p', () => isRunning ? pauseCounting() : resumeCounting()],
-		['mod+backspace', () => removeTimer(true)]
+		['s', () => variant === 'base' && id && !endedAt && stopCounting()],
+		['r', () => variant === 'base' && id && endedAt && restartCounting()],
+		['space', () => variant === 'base' ? isRunning ? pauseCounting() : resumeCounting() : ''],
+		['k', () => variant === 'base' ? isRunning ? pauseCounting() : resumeCounting() : ''],
+		['p', () => variant === 'base' ? isRunning ? pauseCounting() : resumeCounting() : ''],
+		['mod+backspace', () => variant === 'base' && removeTimer(true)]
 	])
 
 	return (
