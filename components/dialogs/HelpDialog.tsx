@@ -5,7 +5,7 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle} from '@/components/ui/
 const HelpDialog = ({ open, setOpen }: { open: boolean, setOpen: (isOpen: boolean) => void  }) => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogContent className="max-w-2xl top-[50%] max-h-[95svh] overflow-y-scroll">
+			<DialogContent className="max-w-2xl top-[50%] max-h-[95svh] overflow-y-auto">
 				<DialogHeader>
 					<DialogTitle className="text-2xl">Help</DialogTitle>
 				</DialogHeader>
