@@ -56,7 +56,7 @@ const AboutPage = async () => {
 			</div>
 
 			<div>
-				<h2 className="text-lg text-neutral-200 font-medium">Join</h2>
+				<h2 className="text-lg text-neutral-200 font-medium">Contribute</h2>
 				<p className="mt-2 text-[15px] font-medium text-neutral-400 font-sans leading-relaxed">
 					The product is free to use. However, no new features, bug fixes, or any meaningful support will be
 					guaranteed. The project is open source and can be found
