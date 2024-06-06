@@ -1,5 +1,5 @@
 import {createClient} from '@/utils/supabase/server'
-import TimerList, {Timer} from '@/components/TimerList'
+import {Timer} from '@/components/TimerList'
 import AppHeader from '@/components/AppHeader'
 import {DateTime} from 'luxon'
 import Separator from '@/components/Separator'
@@ -7,6 +7,8 @@ import NewTimerButton from '@/components/NewTimerButton'
 import TimersEmpty from '@/components/TimersEmpty'
 import {Metadata} from 'next'
 import {getCurrentPSTUnixTimestamp} from '@/lib/utils'
+import OldTimerList from '@/components/OldTimerList'
+import OngoingTimerList from '@/components/OngoingTimerList'
 
 export const metadata: Metadata = {
 	title: 'Ticker - Long Duration Stopwatch',
@@ -48,7 +50,7 @@ const AppHome = async () => {
 
 			{timers.length > 0 && <div>
 				<p className="text-sm opacity-60">Ongoing timers</p>
-				<TimerList initialTimers={timers} className="mt-4" />
+				<OngoingTimerList ongoingTimers={timers} />
 			</div>}
 
 			{timers.length === 0 && <TimersEmpty />}
@@ -59,7 +61,7 @@ const AppHome = async () => {
 
 					<div>
 						<p className="text-sm opacity-60">Old timers</p>
-						<TimerList initialTimers={oldTimers} className="mt-4" />
+						<OldTimerList oldTimers={oldTimers} />
 					</div>
 				</>
 			}

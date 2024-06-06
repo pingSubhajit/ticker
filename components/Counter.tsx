@@ -8,6 +8,8 @@ import Button from '@/components/Button'
 import {deleteTimer, restartTimer, stopTimer} from '@/lib/mutations'
 import {toast} from 'sonner'
 import {useHotkeys} from '@mantine/hooks'
+import {Timer} from '@/components/TimerList'
+import {createClient} from '@/utils/supabase/client'
 
 export type Pause = {
 	pauseId: number
@@ -16,18 +18,34 @@ export type Pause = {
 }
 
 interface CounterProps {
-	initialTime: number,
+	initialTimer: Timer
 	variant?: 'base' | 'list'
-	name?: string
-	endedAt?: number
-	id: number
 	onDelete?: (id: number, next: () => Promise<void>) => Promise<void>
 }
 
-const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: CounterProps) => {
-	const startDate = DateTime.fromMillis(initialTime).toFormat('LLL dd\', \'HH:mm')
+const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
+	const [timer, setTimer] = useState(initialTimer)
+	const supabase = createClient()
+
+	useEffect(() => {
+		const channel = supabase
+			.channel(`timer:${timer.id}:update`)
+			.on(
+				'postgres_changes',
+				{
+					event: 'UPDATE',
+					schema: 'public',
+					table: 'timer',
+					filter: `id=eq.${timer.id}`,
+				},
+				(payload: {new: Timer}) => setTimer(payload.new)
+			)
+			.subscribe()
+	}, [])
+
+	const startDate = DateTime.fromMillis(timer.started_at).toFormat('LLL dd\', \'HH:mm')
 	const [time, setTime] = useState(getCurrentPSTUnixTimestamp())
-	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(initialTime, endedAt))
+	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(timer.started_at, timer.ended_at))
 	const [pauses, setPauses] = useState<Pause[]>([])
 	const [isRunning, setIsRunning] = useState(true)
 	const [loading, setLoading] = useState({
@@ -40,15 +58,15 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 		setLoading({ ...loading, delete: true })
 		const deleteTimerFunction = async () => {
 			try {
-				const deletedTimer = await deleteTimer(id, withRedirect)
-				toast.success(`Timer "${deletedTimer ? deletedTimer.name : `Timer no. ${id}`}" deleted`)
+				const deletedTimer = await deleteTimer(timer.id, withRedirect)
+				toast.success(`Timer "${deletedTimer ? deletedTimer.name : `Timer no. ${timer.id}`}" deleted`)
 			} catch (error: any) {
 				toast.error(error.message || 'Could not delete timer')
 			}
 		}
 
 		if (onDelete) {
-			await onDelete(id, deleteTimerFunction)
+			await onDelete(timer.id, deleteTimerFunction)
 		} else {
 			await deleteTimerFunction()
 		}
@@ -59,7 +77,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 	const restartCounting = async () => {
 		setLoading({ ...loading, restart: true })
 		try {
-			const restartedTimer = await restartTimer(id, getCurrentPSTUnixTimestamp())
+			const restartedTimer = await restartTimer(timer.id, getCurrentPSTUnixTimestamp())
 			toast.success(`Timer "${restartedTimer.name}" restarted`)
 		} catch (error: any) {
 			toast.error(error.message || 'Could not restart timer')
@@ -70,7 +88,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 	const stopCounting = async () => {
 		setLoading({ ...loading, stop: true })
 		try {
-			const stoppedTimer = await stopTimer(id, getCurrentPSTUnixTimestamp())
+			const stoppedTimer = await stopTimer(timer.id, getCurrentPSTUnixTimestamp())
 			toast.success(`Timer "${stoppedTimer.name}" stopped`)
 		} catch (error: any) {
 			toast.error(error.message || 'Could not stop timer')
@@ -96,10 +114,10 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
-			if (!isRunning || endedAt) return
+			if (!isRunning || timer.ended_at) return
 			setTime(prevTime => {
 				const currentTime = !isRunning ? prevTime : getCurrentPSTUnixTimestamp() + 100
-				const seconds = Math.floor((currentTime - initialTime) / 1000)
+				const seconds = Math.floor((currentTime - timer.started_at) / 1000)
 				const minutes = Math.floor(seconds / 60)
 				const hours = Math.floor(minutes / 60)
 				const days = Math.floor(hours / 24)
@@ -108,7 +126,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 			})
 		}, 100) // Updating time every 100 milliseconds
 		return () => clearInterval(intervalId) // Cleanup function to clear the interval when component unmounts
-	}, [isRunning, endedAt]) // Empty dependency array ensures the effect runs only once when component mounts
+	}, [isRunning, timer.ended_at]) // Empty dependency array ensures the effect runs only once when component mounts
 
 	useEffect(() => {
 		const continueCounterOnFocusIn = () => {
@@ -123,8 +141,8 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 	}, [isRunning])
 
 	useHotkeys([
-		['s', () => variant === 'base' && id && !endedAt && stopCounting()],
-		['r', () => variant === 'base' && id && endedAt && restartCounting()],
+		['s', () => variant === 'base' && timer.id && !timer.ended_at && stopCounting()],
+		['r', () => variant === 'base' && timer.id && timer.ended_at && restartCounting()],
 		['space', () => variant === 'base' ? isRunning ? pauseCounting() : resumeCounting() : ''],
 		['k', () => variant === 'base' ? isRunning ? pauseCounting() : resumeCounting() : ''],
 		['p', () => variant === 'base' ? isRunning ? pauseCounting() : resumeCounting() : ''],
@@ -158,26 +176,26 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 				</div>
 
 				<div className="flex items-center mt-8 gap-2 justify-center">
-					{id && !endedAt && <Button size="icon" onClick={stopCounting} variant="secondary" disabled={loading.stop}>
+					{timer.id && !timer.ended_at && <Button size="icon" onClick={stopCounting} variant="secondary" disabled={loading.stop}>
 						{loading.stop && <LoaderCircle className="w-8 h-8 animate-spin" />}
 						{!loading.stop && <Square className="fill-yellow-400 w-8 h-8" />}
 					</Button>}
 
-					{id && endedAt && <Button size="icon" onClick={restartCounting} disabled={loading.restart}>
+					{timer.id && timer.ended_at && <Button size="icon" onClick={restartCounting} disabled={loading.restart}>
 						{loading.restart && <LoaderCircle className="w-8 h-8 animate-spin" />}
 						{!loading.restart && <RotateCw className="w-8 h-8" strokeWidth={3} />}
 					</Button>}
 
-					{id && endedAt && <Button size="icon" onClick={() => removeTimer(true)} variant="secondary" disabled={loading.delete}>
+					{timer.id && timer.ended_at && <Button size="icon" onClick={() => removeTimer(true)} variant="secondary" disabled={loading.delete}>
 						{loading.delete && <LoaderCircle className="w-8 h-8 animate-spin" />}
 						{!loading.delete && <Trash2 className="w-8 h-8" strokeWidth={3} />}
 					</Button>}
 
-					{isRunning && !endedAt && <Button onClick={pauseCounting} size="icon">
+					{isRunning && !timer.ended_at && <Button onClick={pauseCounting} size="icon">
 						<Pause className="fill-neutral-950 w-8 h-8" />
 					</Button>}
 
-					{!isRunning && !endedAt && <Button onClick={resumeCounting} size="icon">
+					{!isRunning && !timer.ended_at && <Button onClick={resumeCounting} size="icon">
 						<Play className="fill-neutral-950 w-8 h-8" />
 					</Button>}
 				</div>
@@ -188,7 +206,7 @@ const Counter = ({ id, initialTime, variant='base', name, endedAt, onDelete }: C
 				className="flex items-center gap-1 w-full rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden
 				group hover-hover:hover:bg-neutral-200/10 transition"
 			>
-				<p className="w-1/3 text-left truncate opacity-60 font-sans">{name}</p>
+				<p className="w-1/3 text-left truncate opacity-60 font-sans">{timer.name}</p>
 
 				<p className="w-1/3 text-center">
 					<span className={cn(breakdown.hours !== 0 && 'text-yellow-400')}>

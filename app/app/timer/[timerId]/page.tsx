@@ -11,9 +11,8 @@ import WaveDecoration from '@/components/WaveDecoration'
 const Counter = dynamic(() => import('@/components/Counter'), {ssr: false, loading: () => <CounterLoading />})
 
 export async function generateMetadata(
-	{ params }: { params: { timerId: string } }, parent: ResolvingMetadata)
-	: Promise<Metadata>
-{
+	{ params }: { params: { timerId: string } }, parent: ResolvingMetadata
+): Promise<Metadata> {
 	// read route params
 	const timerId = params.timerId
 
@@ -48,7 +47,7 @@ const SingleTimer = async ({ params: { timerId } }: { params: { timerId: number 
 				backLink="/app"
 			/>
 
-			<Counter initialTime={timer.started_at} name={timer.name} id={timer.id} endedAt={timer.ended_at} />
+			<Counter initialTimer={timer} />
 
 			<p className="text-center opacity-60 font-sans">Started {getInitialBreakdown(timer.started_at).days}d ago</p>
 
