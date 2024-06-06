@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 		'mobile stopwatch app', 'free stopwatch', 'stopwatch for days', 'stopwatch for months', 'stopwatch for years'
 	],
 	generator: 'Next.js',
-	manifest: '/manifest.json',
+	manifest: '/manifest.webmanifest',
 	icons: [
 		{ rel: 'apple-touch-icon', url: 'logo.png' },
 		{ rel: 'icon', url: 'logo.png' },
