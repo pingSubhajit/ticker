@@ -22,7 +22,7 @@ interface CounterProps {
 	initialTimer: Timer
 	variant?: 'base' | 'list'
 	onDelete?: (id: number, next: () => Promise<void>) => Promise<void>
-	focus: boolean
+	focus?: boolean
 }
 
 const Counter = ({initialTimer, variant='base', onDelete, focus }: CounterProps) => {
