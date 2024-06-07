@@ -10,6 +10,7 @@
     "lint:fix": "next lint --fix"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.2",
     "@hookform/resolvers": "^3.5.0",
     "@mantine/hooks": "^7.10.1",
     "@radix-ui/react-dialog": "^1.0.5",
