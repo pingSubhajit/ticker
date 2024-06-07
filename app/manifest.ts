@@ -9,13 +9,18 @@ export default function manifest(): MetadataRoute.Manifest {
 		start_url: '/',
 		display: 'standalone',
 		background_color: '#0a0a0a',
-		theme_color: '#facc15',
+		theme_color: '#0a0a0a',
 		icons: [
 			{
 				src: '/logo144.png',
 				sizes: '144x144',
 				type: 'image/png',
 			},
+			{
+				src: '/logo512.png',
+				sizes: '512x512',
+				type: 'image/png'
+			}
 		],
 		orientation: 'portrait',
 	}

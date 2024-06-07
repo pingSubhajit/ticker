@@ -41,7 +41,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
 					</GlobalKeybindProvider>
 				</DialogsProvider>
 
-				<Toaster />
+				<Toaster richColors />
 			</body>
 		</html>
 	)

@@ -1,8 +1,19 @@
 'use client'
 
-import TimerList, {Timer} from '@/components/TimerList'
+import {Timer} from '@/components/TimerList'
 import {useState} from 'react'
 import TimersEmpty from '@/components/TimersEmpty'
+import dynamic from 'next/dynamic'
+import {CounterLoading} from '@/components/Counter'
+
+const TimerList = dynamic(() => import('@/components/TimerList'), {
+	ssr: false,
+	loading: () => <ul className="w-full mt-4 flex flex-col gap-3" role="list">
+		<CounterLoading variant="list" />
+		<CounterLoading variant="list" />
+		<CounterLoading variant="list" />
+	</ul>
+})
 
 const OngoingTimerList = ({ ongoingTimers }: { ongoingTimers: Timer[] }) => {
 	const [timers, setTimers] = useState<Timer[]>(ongoingTimers)
