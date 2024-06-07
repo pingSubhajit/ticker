@@ -3,13 +3,13 @@
 import {CounterLoading, Pause} from '@/components/Counter'
 import dynamic from 'next/dynamic'
 import {cn} from '@/lib/utils'
-import {Dispatch, SetStateAction, startTransition, useEffect, useRef} from 'react'
+import {Dispatch, SetStateAction, startTransition, useEffect} from 'react'
 import {createClient} from '@/utils/supabase/client'
 import {
 	REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
 	RealtimePostgresChangesFilter
 } from '@supabase/realtime-js/src/RealtimeChannel'
-import autoAnimate from '@formkit/auto-animate'
+import {useAutoAnimate} from '@formkit/auto-animate/react'
 
 const Counter = dynamic(() => import('@/components/Counter'), {ssr: false, loading: () => <CounterLoading variant="list" />})
 
@@ -37,7 +37,7 @@ const TimerList = ({ timers, setTimers, supabaseSubscribeConfig, channelName, fi
 		await next()
 	}
 
-	const listContainer = useRef<HTMLUListElement | null>(null)
+	const [listContainer] = useAutoAnimate()
 
 	const supabase = createClient()
 
@@ -86,10 +86,6 @@ const TimerList = ({ timers, setTimers, supabaseSubscribeConfig, channelName, fi
 			channel.unsubscribe
 		}
 	}, [])
-
-	useEffect(() => {
-		listContainer.current && autoAnimate(listContainer.current)
-	}, [listContainer])
 
 	return (
 		<ul className={cn('w-full flex flex-col gap-3', className)} role="list" ref={listContainer}>

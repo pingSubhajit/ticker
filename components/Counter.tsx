@@ -66,7 +66,7 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 				const deletedTimer = await deleteTimer(timer.id, withRedirect)
 				toast.success(`Timer "${deletedTimer ? deletedTimer.name : `Timer no. ${timer.id}`}" deleted`)
 			} catch (error: any) {
-				toast.error(error.message || 'Could not delete timer')
+				toast.error('Could not delete timer')
 			}
 		}
 
@@ -85,7 +85,7 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 			const restartedTimer = await restartTimer(timer.id, getCurrentUnixTimestamp())
 			toast.success(`Timer "${restartedTimer.name}" restarted`)
 		} catch (error: any) {
-			toast.error(error.message || 'Could not restart timer')
+			toast.error('Could not restart timer')
 		}
 		setLoading({ ...loading, restart: false })
 	}
@@ -96,7 +96,7 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 			const stoppedTimer = await stopTimer(timer.id, getCurrentUnixTimestamp())
 			toast.success(`Timer "${stoppedTimer.name}" stopped`)
 		} catch (error: any) {
-			toast.error(error.message || 'Could not stop timer')
+			toast.error('Could not stop timer')
 		}
 		setLoading({ ...loading, stop: false })
 	}
@@ -148,12 +148,12 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 	}, [isRunning])
 
 	useHotkeys([
-		['s', () => variant === 'base' && timer.id && !timer.ended_at && stopCounting()],
-		['r', () => variant === 'base' && timer.id && timer.ended_at && restartCounting()],
+		['s', () => variant === 'base' && !loading.stop && timer.id && !timer.ended_at && stopCounting()],
+		['r', () => variant === 'base' && !loading.restart && timer.id && timer.ended_at && restartCounting()],
 		['space', () => variant === 'base' ? isRunning ? pauseCounting() : resumeCounting() : ''],
 		['k', () => variant === 'base' ? isRunning ? pauseCounting() : resumeCounting() : ''],
 		['p', () => variant === 'base' ? isRunning ? pauseCounting() : resumeCounting() : ''],
-		['mod+backspace', () => variant === 'base' && removeTimer(true)]
+		['mod+backspace', () => variant === 'base' && !loading.delete && removeTimer(true)]
 	])
 
 	return (
@@ -253,15 +253,19 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 						className="absolute top-0 bottom-0 h-full right-0 translate-x-[100%]
 						hover-hover:group-hover:translate-x-0 group-focus-visible:translate-x-0 aspect-square !p-0 flex
 						items-center justify-center rounded-none" tabIndex={-1}
+						disabled={loading.delete}
 						onClick={(event) => {
-							event.stopPropagation()
-							event.nativeEvent.stopImmediatePropagation()
-							event.preventDefault()
-							removeTimer(false)
+							if (!loading.delete) {
+								event.stopPropagation()
+								event.nativeEvent.stopImmediatePropagation()
+								event.preventDefault()
+								removeTimer(false)
+							}
 						}}
 					>
 						<span className="sr-only">Delete</span>
-						<Trash2 className="w-6 h-6" strokeWidth={2} aria-hidden/>
+						{loading.delete && <LoaderCircle className="w-8 h-8 animate-spin" aria-hidden />}
+						{!loading.delete && <Trash2 className="w-6 h-6" strokeWidth={2} aria-hidden/>}
 					</Button>
 				</Link>
 			</li>
