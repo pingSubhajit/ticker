@@ -28,8 +28,7 @@ const AppHeader = ({ title, profileUrl, isTimer=false, backLink }: AppHeaderProp
 		<header className="flex items-center justify-between gap-2 md:gap-4">
 			{!backLink && <Link href="/about"><Image src={logo} alt="Ticker logo" className="w-10 h-10 rounded-full"/></Link>}
 			{backLink && <Link href={backLink}>
-				<button className="w-10 aspect-square bg-neutral-50/5 hover-hover:hover:bg-neutral-200/10
-				rounded-full flex items-center justify-center transition">
+				<button className="w-10 aspect-square bg-neutral-50/5 hover-hover:hover:bg-neutral-200/10 rounded-full flex items-center justify-center transition">
 					<ChevronLeft className="w-4 h-4" />
 				</button>
 			</Link>}
