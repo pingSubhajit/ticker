@@ -2,7 +2,6 @@
 
 import {createClient} from '@/utils/supabase/server'
 import {Timer} from '@/components/TimerList'
-import {revalidatePath} from 'next/cache'
 import {redirect} from 'next/navigation'
 import {getCurrentUnixTimestamp} from '@/lib/utils'
 
@@ -20,7 +19,6 @@ export const createTimer = async (name?: string, timestamp?: number) => {
 		throw new Error(error.message || 'Could not create timer')
 	}
 
-	revalidatePath('/app')
 	return timer as Timer
 }
 
@@ -36,9 +34,6 @@ export const updateName = async (timerId: number, name: string) => {
 	if (error) {
 		throw new Error(error.message || 'Could not rename timer')
 	}
-
-	revalidatePath('/app')
-	revalidatePath(`/app/timer/${timerId}`)
 
 	return timer as Timer
 }
@@ -56,9 +51,6 @@ export const stopTimer = async (timerId: number, timestamp?: number) => {
 		throw new Error(error.message || 'Could not stop timer')
 	}
 
-	revalidatePath('/app')
-	revalidatePath(`/app/timer/${timerId}`)
-
 	return timer as Timer
 }
 
@@ -75,9 +67,6 @@ export const restartTimer = async (timerId: number, timestamp?: number) => {
 	if (error) {
 		throw new Error(error.message || 'Could not restart timer')
 	}
-
-	revalidatePath('/app')
-	revalidatePath(`/app/timer/${timerId}`)
 
 	return timer as Timer
 }
