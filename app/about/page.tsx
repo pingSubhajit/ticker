@@ -78,6 +78,16 @@ const AboutPage = async () => {
 				</p>
 			</div>
 
+			<div>
+				<h2 className="text-lg text-neutral-200 font-medium">Terms</h2>
+				<p className="mt-2 text-[15px] font-medium text-neutral-400 font-sans leading-relaxed">
+					To verify the product on Google, I had to create documents such as <a href="/terms" target="_blank"
+						className="text-yellow-400 hover:text-yellow-500 transition">Terms of Service</a> and <a
+						href="/privacy" target="_blank" className="text-yellow-400 hover:text-yellow-500 transition">
+						Privacy Policy</a> and needed to be displayed prominently. So here you have it.
+				</p>
+			</div>
+
 			<Separator />
 
 			<footer className="flex justify-between items-center w-full">

@@ -43,7 +43,16 @@ export default async function Home() {
 				</Link>
 			</div>
 
-			<WaveDecoration double={true} />
+			<footer className="flex justify-between items-center w-full lg:absolute left-0 bottom-4 lg:px-8">
+				<a href="/privacy" target="_blank" className="text-yellow-100 hover:text-yellow-500 transition opacity-80">
+					<p className="mt-2 text-sm font-medium text-right">Privacy</p>
+				</a>
+				<a href="/terms" target="_blank" className="text-yellow-100 hover:text-yellow-500 transition opacity-80">
+					<p className="mt-2 text-sm font-medium text-right">Terms</p>
+				</a>
+			</footer>
+
+			<WaveDecoration double={true}/>
 		</main>
 	)
 }
