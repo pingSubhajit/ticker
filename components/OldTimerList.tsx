@@ -8,11 +8,11 @@ const OldTimerList = ({ oldTimers }: { oldTimers: Timer[] }) => {
 	const [timers, setTimers] = useState<Timer[]>(oldTimers)
 
 	return (
-		timers.length > 0 ? <>
-			<Separator />
+		<>
+			{timers.length > 0 && <Separator />}
 
 			<div>
-				<p className="text-sm opacity-60">Old timers</p>
+				{timers.length > 0 && <p className="text-sm opacity-60">Old timers</p>}
 				<TimerList
 					timers={timers}
 					setTimers={setTimers}
@@ -26,7 +26,7 @@ const OldTimerList = ({ oldTimers }: { oldTimers: Timer[] }) => {
 					filter={(timer) => timer.ended_at !== null}
 				/>
 			</div>
-		</> : ''
+		</>
 	)
 }
 

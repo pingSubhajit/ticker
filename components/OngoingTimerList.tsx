@@ -5,8 +5,9 @@ import {useState} from 'react'
 import TimersEmpty from '@/components/TimersEmpty'
 import dynamic from 'next/dynamic'
 import {CounterLoading} from '@/components/Counter'
+import {cn} from '@/lib/utils'
 
-const TimerList = dynamic(() => import('@/components/TimerList'), {
+const TimerListWithLoading = dynamic(() => import('@/components/TimerList'), {
 	ssr: false,
 	loading: () => <ul className="w-full mt-4 flex flex-col gap-3" role="list">
 		<CounterLoading variant="list" />
@@ -15,17 +16,20 @@ const TimerList = dynamic(() => import('@/components/TimerList'), {
 	</ul>
 })
 
+const TimerListWithoutLoading = dynamic(() => import('@/components/TimerList'), {ssr: false})
+
 const OngoingTimerList = ({ ongoingTimers }: { ongoingTimers: Timer[] }) => {
 	const [timers, setTimers] = useState<Timer[]>(ongoingTimers)
 
 	return (
-		timers.length > 0 ? <div>
-			<p className="text-sm opacity-60">Ongoing timers</p>
-
-			<TimerList
+		<div>
+			{timers.length > 0 ? <div>
+				<p className="text-sm opacity-60">Ongoing timers</p>
+			</div> : timers.length === 0 && <TimersEmpty />}
+			{timers.length > 0 ? <TimerListWithLoading
 				timers={timers}
 				setTimers={setTimers}
-				className="mt-4"
+				className={cn('mt-4', timers.length === 0 && 'hidden')}
 				supabaseSubscribeConfig={{
 					event: '*',
 					schema: 'public',
@@ -33,8 +37,19 @@ const OngoingTimerList = ({ ongoingTimers }: { ongoingTimers: Timer[] }) => {
 				}}
 				channelName="TimerList:Ongoing"
 				filter={(timer) => timer.ended_at === null}
-			/>
-		</div> : timers.length === 0 && <TimersEmpty />
+			/> : <TimerListWithoutLoading
+				timers={timers}
+				setTimers={setTimers}
+				className={cn(timers.length === 0 && 'hidden')}
+				supabaseSubscribeConfig={{
+					event: '*',
+					schema: 'public',
+					table: 'timer',
+				}}
+				channelName="TimerList:Ongoing"
+				filter={(timer) => timer.ended_at === null}
+			/>}
+		</div>
 	)
 }
 
