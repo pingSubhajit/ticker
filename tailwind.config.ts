@@ -24,7 +24,7 @@ const config = {
 				}
 			},
 			fontFamily: {
-				ClashDisplay: ['Clash Display', 'sans-serif']
+				ClashDisplay: ['var(--font-clash-display)']
 			},
 			colors: {
 				border: 'var(--border)',

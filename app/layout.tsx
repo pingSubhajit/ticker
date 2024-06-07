@@ -6,12 +6,14 @@ import {Toaster} from '@/components/ui/sonner'
 import {DialogsProvider} from '@/components/providers/dialog-provider'
 import NextTopLoader from 'nextjs-toploader'
 import GlobalKeybindProvider from '@/components/providers/global-keybind-provider'
+import localFont from 'next/font/local'
 
 export const metadata: Metadata = {
 	metadataBase: new URL(defaultUrl),
 	title: 'Ticker - Long Duration Stopwatch',
 	description: 'Ticker is a mobile-first, long-duration, cloud-synced stopwatch application. Track time for days, ' +
-		'months, or even years. Create and access your stopwatches from anywhere. Free and open-source with an MIT license.',
+		'months, or even years. Create and access your stopwatches from anywhere. Free and open-source with an MIT ' +
+		'license.',
 	keywords: [
 		'stopwatch', 'timer', 'long duration', 'cloud synced', 'open source', 'mobile first', 'minimalistic',
 		'Ticker', 'long duration stopwatch', 'cloud synced stopwatch', 'open source stopwatch', 'minimalistic stopwatch',
@@ -26,9 +28,35 @@ export const metadata: Metadata = {
 	authors: [{ name: 'Subhajit Kundu', url: portfolio }]
 }
 
+const clashDisplay = localFont({
+	src: [
+		{
+			path: '../fonts/ClashDisplay-Regular.woff2',
+			weight: '400',
+			style: 'normal',
+		},
+		{
+			path: '../fonts/ClashDisplay-Medium.woff2',
+			weight: '500',
+			style: 'normal',
+		},
+		{
+			path: '../fonts/ClashDisplay-Semibold.woff2',
+			weight: '600',
+			style: 'normal',
+		},
+		{
+			path: '../fonts/ClashDisplay-Bold.woff2',
+			weight: '700',
+			style: 'normal',
+		},
+	],
+	variable: '--font-clash-display'
+})
+
 export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
 	return (
-		<html lang="en">
+		<html lang="en" className={clashDisplay.variable}>
 			<body className="font-ClashDisplay">
 				{/* PROGRESS BAR */}
 				<NextTopLoader showSpinner={false} color="#facc15" />
