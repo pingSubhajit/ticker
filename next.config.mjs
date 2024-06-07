@@ -11,13 +11,14 @@ const withPWA = CreatPwa({
 const nextConfig = withPWA({
 	experimental: {
 		reactCompiler: true,
+		ppr: true
 	},
 	reactStrictMode: true,
 	images: {
 		remotePatterns: [
 			{
 				protocol: 'https',
-				hostname: '**',
+				hostname: '**.googleusercontent.com',
 			},
 		],
 	}
