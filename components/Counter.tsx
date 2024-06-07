@@ -10,6 +10,7 @@ import {toast} from 'sonner'
 import {useHotkeys} from '@mantine/hooks'
 import {Timer} from '@/components/TimerList'
 import {createClient} from '@/utils/supabase/client'
+import Link from 'next/link'
 
 export type Pause = {
 	pauseId: number
@@ -182,66 +183,78 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 				</div>
 
 				<div className="flex items-center mt-8 gap-2 justify-center">
-					{timer.id && !timer.ended_at && <Button size="icon" onClick={stopCounting} variant="secondary" disabled={loading.stop}>
-						{loading.stop && <LoaderCircle className="w-8 h-8 animate-spin" />}
-						{!loading.stop && <Square className="fill-yellow-400 w-8 h-8" />}
-					</Button>}
+					{timer.id && !timer.ended_at &&
+						<Button size="icon" onClick={stopCounting} variant="secondary" disabled={loading.stop}>
+							<span className="sr-only">Stop</span>
+							{loading.stop && <LoaderCircle className="w-8 h-8 animate-spin" aria-hidden />}
+							{!loading.stop && <Square className="fill-yellow-400 w-8 h-8" aria-hidden />}
+						</Button>
+					}
 
-					{timer.id && timer.ended_at && <Button size="icon" onClick={restartCounting} disabled={loading.restart}>
-						{loading.restart && <LoaderCircle className="w-8 h-8 animate-spin" />}
-						{!loading.restart && <RotateCw className="w-8 h-8" strokeWidth={3} />}
-					</Button>}
+					{timer.id && timer.ended_at &&
+                        <Button size="icon" onClick={restartCounting} disabled={loading.restart}>
+                        	<span className="sr-only">Restart</span>
+                        	{loading.restart && <LoaderCircle className="w-8 h-8 animate-spin" aria-hidden />}
+                        	{!loading.restart && <RotateCw className="w-8 h-8" strokeWidth={3} aria-hidden />}
+                        </Button>
+					}
 
-					{timer.id && timer.ended_at && <Button size="icon" onClick={() => removeTimer(true)} variant="secondary" disabled={loading.delete}>
-						{loading.delete && <LoaderCircle className="w-8 h-8 animate-spin" />}
-						{!loading.delete && <Trash2 className="w-8 h-8" strokeWidth={3} />}
-					</Button>}
+					{timer.id && timer.ended_at &&
+                        <Button size="icon" onClick={() => removeTimer(true)} variant="secondary" disabled={loading.delete}>
+                        	<span className="sr-only">Delete</span>
+                        	{loading.delete && <LoaderCircle className="w-8 h-8 animate-spin" aria-hidden />}
+                        	{!loading.delete && <Trash2 className="w-8 h-8" strokeWidth={3} aria-hidden />}
+                        </Button>
+					}
 
 					{isRunning && !timer.ended_at && <Button onClick={pauseCounting} size="icon">
-						<Pause className="fill-neutral-950 w-8 h-8" />
+						<span className="sr-only">Pause</span>
+						<Pause className="fill-neutral-950 w-8 h-8" aria-hidden />
 					</Button>}
 
 					{!isRunning && !timer.ended_at && <Button onClick={resumeCounting} size="icon">
-						<Play className="fill-neutral-950 w-8 h-8" />
+						<span className="sr-only">Play</span>
+						<Play className="fill-neutral-950 w-8 h-8" aria-hidden />
 					</Button>}
 				</div>
 			</div>
 		) : (
-			<li
-				role="listitem"
-				className="flex items-center gap-1 w-full rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden
-				group hover-hover:hover:bg-neutral-200/10 transition"
-			>
-				<p className="w-1/3 text-left truncate opacity-60 font-sans">{timer.name}</p>
+			<li role="listitem">
+				<Link href={`/app/timer/${timer.id}`} key={timer.id} className="flex items-center gap-1 w-full
+				rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group hover-hover:hover:bg-neutral-200/10
+				transition">
+					<p className="w-1/3 text-left truncate opacity-60 font-sans">{timer.name}</p>
 
-				<p className="w-1/3 text-center">
-					<span className={cn(breakdown.hours !== 0 && 'text-yellow-400')}>
-						{breakdown.hours.toString().padStart(2, '0')}
-					</span> &nbsp;: &nbsp;
-					<span className={cn(breakdown.hours === 0 && breakdown.minutes !== 0 && 'text-yellow-400')}>
-						{(breakdown.minutes % 60).toString().padStart(2, '0')}
-					</span> &nbsp;: &nbsp;
-					<span className={cn(breakdown.hours === 0 && breakdown.minutes === 0 && 'text-yellow-400')}>
-						{(breakdown.seconds % 60).toString().padStart(2, '0')}
-					</span>
-				</p>
+					<p className="w-1/3 text-center">
+						<span className={cn(breakdown.hours !== 0 && 'text-yellow-400')}>
+							{breakdown.hours.toString().padStart(2, '0')}
+						</span> &nbsp;: &nbsp;
+						<span className={cn(breakdown.hours === 0 && breakdown.minutes !== 0 && 'text-yellow-400')}>
+							{(breakdown.minutes % 60).toString().padStart(2, '0')}
+						</span> &nbsp;: &nbsp;
+						<span className={cn(breakdown.hours === 0 && breakdown.minutes === 0 && 'text-yellow-400')}>
+							{(breakdown.seconds % 60).toString().padStart(2, '0')}
+						</span>
+					</p>
 
-				<p className="w-1/3 text-right opacity-60 font-sans">{breakdown.days}d ago</p>
+					<p className="w-1/3 text-right opacity-60 font-sans">{breakdown.days}d ago</p>
 
-				<Button
-					size="icon"
-					className="absolute top-0 bottom-0 h-full right-0 translate-x-[100%]
+					<Button
+						size="icon"
+						className="absolute top-0 bottom-0 h-full right-0 translate-x-[100%]
 					hover-hover:group-hover:translate-x-0 group-focus-visible:translate-x-0 aspect-square !p-0 flex
 					items-center justify-center rounded-none" tabIndex={-1}
-					onClick={(event) => {
-						event.stopPropagation()
-						event.nativeEvent.stopImmediatePropagation()
-						event.preventDefault()
-						removeTimer(false)
-					}}
-				>
-					<Trash2 className="w-6 h-6" strokeWidth={2} />
-				</Button>
+						onClick={(event) => {
+							event.stopPropagation()
+							event.nativeEvent.stopImmediatePropagation()
+							event.preventDefault()
+							removeTimer(false)
+						}}
+					>
+						<span className="sr-only">Delete</span>
+						<Trash2 className="w-6 h-6" strokeWidth={2} aria-hidden/>
+					</Button>
+				</Link>
 			</li>
 		)
 	)
@@ -249,14 +262,14 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 
 export default Counter
 
-export const CounterLoading = ({ variant='base' }: { variant?: 'base' | 'list' }) => {
+export const CounterLoading = ({variant = 'base'}: { variant?: 'base' | 'list' }) => {
 	return (
 		variant === 'base' ? (
 			<div>
 
 			</div>
 		) : (
-			<div className="flex items-center animate-pulse w-full rounded-3xl bg-neutral-50/5 h-[72px]" />
+			<div className="flex items-center animate-pulse w-full rounded-3xl bg-neutral-50/5 h-[72px]"/>
 		)
 	)
 }

@@ -11,7 +11,8 @@ const HelpButton = () => {
 			className="items-center justify-center fixed bottom-8 right-8 p-2 hidden lg:flex opacity-60"
 			onClick={() => setIsHelpDialogOpen(true)}
 		>
-			<CircleHelp className="w-6 h-6" />
+			<span className="sr-only">Help</span>
+			<CircleHelp className="w-6 h-6" aria-hidden />
 		</button>
 	)
 }

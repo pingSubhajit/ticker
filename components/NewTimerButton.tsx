@@ -11,7 +11,8 @@ const NewTimerButton = ({ className }: { className?: string }) => {
 	return (
 		<>
 			<Button size="icon" className={cn('p-6', className)} onClick={() => setIsCreateDialogOpen(true)}>
-				<Plus className="fill-neutral-950 w-6 h-6" strokeWidth={3} />
+				<span className="sr-only">New timer</span>
+				<Plus className="fill-neutral-950 w-6 h-6" strokeWidth={3} aria-hidden />
 			</Button>
 		</>
 	)

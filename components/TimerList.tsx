@@ -3,7 +3,6 @@
 import {CounterLoading, Pause} from '@/components/Counter'
 import dynamic from 'next/dynamic'
 import {cn} from '@/lib/utils'
-import Link from 'next/link'
 import {Dispatch, SetStateAction, startTransition, useEffect} from 'react'
 import {createClient} from '@/utils/supabase/client'
 import {
@@ -88,13 +87,11 @@ const TimerList = ({ timers, setTimers, supabaseSubscribeConfig, channelName, fi
 	return (
 		<ul className={cn('w-full flex flex-col gap-3', className)} role="list">
 			{timers?.map((timer) => (
-				<Link href={`/app/timer/${timer.id}`} key={timer.id}>
-					<Counter
-						initialTimer={timer}
-						variant="list"
-						onDelete={onDelete}
-					/>
-				</Link>
+				<Counter
+					initialTimer={timer}
+					variant="list"
+					onDelete={onDelete}
+				/>
 			))}
 		</ul>
 	)
