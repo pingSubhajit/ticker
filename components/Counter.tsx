@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {Breakdown, cn, getCurrentUnixTimestamp, getInitialBreakdown} from '@/lib/utils'
 import {LoaderCircle, Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
 import {DateTime} from 'luxon'
@@ -22,11 +22,20 @@ interface CounterProps {
 	initialTimer: Timer
 	variant?: 'base' | 'list'
 	onDelete?: (id: number, next: () => Promise<void>) => Promise<void>
+	focus: boolean
 }
 
-const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
+const Counter = ({initialTimer, variant='base', onDelete, focus }: CounterProps) => {
 	const [timer, setTimer] = useState(initialTimer)
 	const supabase = createClient()
+	const listItemRef = useRef<HTMLAnchorElement>(null)
+
+	// Focus the list item when the focus prop is true
+	useEffect(() => {
+		if (focus) {
+			listItemRef.current?.focus()
+		}
+	}, [focus])
 
 	useEffect(() => {
 		const channel = supabase
@@ -221,6 +230,7 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 		) : (
 			<li role="listitem">
 				<Link
+					ref={listItemRef}
 					href={`/app/timer/${timer.id}`}
 					className="flex items-center gap-1 w-full
 					rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group hover-hover:hover:bg-neutral-200/10

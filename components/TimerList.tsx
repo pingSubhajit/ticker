@@ -3,12 +3,13 @@
 import {CounterLoading, Pause} from '@/components/Counter'
 import dynamic from 'next/dynamic'
 import {cn} from '@/lib/utils'
-import {Dispatch, SetStateAction, startTransition, useEffect} from 'react'
+import {Dispatch, SetStateAction, startTransition, useEffect, useState} from 'react'
 import {createClient} from '@/utils/supabase/client'
 import {
 	REALTIME_POSTGRES_CHANGES_LISTEN_EVENT,
 	RealtimePostgresChangesFilter
 } from '@supabase/realtime-js/src/RealtimeChannel'
+import useCyclingFocus from '@/hooks/useCyclingFocus'
 
 const Counter = dynamic(() => import('@/components/Counter'), {ssr: false, loading: () => <CounterLoading variant="list" />})
 
@@ -35,6 +36,9 @@ const TimerList = ({ timers, setTimers, supabaseSubscribeConfig, channelName, fi
 	const onDelete = async (id: number, next: () => Promise<void>) => {
 		await next()
 	}
+
+	const [isListFocused, setIsListFocused] = useState(false)
+	const [focusedIndex] = useCyclingFocus(timers.length)
 
 	const supabase = createClient()
 
@@ -85,13 +89,19 @@ const TimerList = ({ timers, setTimers, supabaseSubscribeConfig, channelName, fi
 	}, [])
 
 	return (
-		<ul className={cn('w-full flex flex-col gap-3', className)} role="list">
-			{timers?.map((timer) => (
+		<ul
+			className={cn('w-full flex flex-col gap-3', className)}
+			role="list"
+			onFocus={() => setIsListFocused(true)}
+			onBlur={() => setIsListFocused(false)}
+		>
+			{timers?.map((timer, index) => (
 				<Counter
 					key={timer.id}
 					initialTimer={timer}
 					variant="list"
 					onDelete={onDelete}
+					focus={isListFocused && focusedIndex === index}
 				/>
 			))}
 		</ul>
