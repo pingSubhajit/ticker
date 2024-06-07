@@ -219,7 +219,7 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 				</div>
 			</div>
 		) : (
-			<li role="listitem" key={timer.id}>
+			<li role="listitem">
 				<Link
 					href={`/app/timer/${timer.id}`}
 					className="flex items-center gap-1 w-full

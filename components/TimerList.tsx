@@ -88,6 +88,7 @@ const TimerList = ({ timers, setTimers, supabaseSubscribeConfig, channelName, fi
 		<ul className={cn('w-full flex flex-col gap-3', className)} role="list">
 			{timers?.map((timer) => (
 				<Counter
+					key={timer.id}
 					initialTimer={timer}
 					variant="list"
 					onDelete={onDelete}
