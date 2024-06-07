@@ -40,8 +40,10 @@ git clone https://github.com/pingSubhajit/ticker.git
 ```
 2. **Install dependencies**
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
+Please note that the `--legacy-peer-deps` flag is required because the project uses release candidate version of React
+and Next.js. The flag is required to install the dependencies without any issues.
 3. **Create a `.env` file in the root directory**
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
