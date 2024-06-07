@@ -219,10 +219,19 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 				</div>
 			</div>
 		) : (
-			<li role="listitem">
-				<Link href={`/app/timer/${timer.id}`} key={timer.id} className="flex items-center gap-1 w-full
-				rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group hover-hover:hover:bg-neutral-200/10
-				transition">
+			<li role="listitem" key={timer.id}>
+				<Link
+					href={`/app/timer/${timer.id}`}
+					className="flex items-center gap-1 w-full
+					rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group hover-hover:hover:bg-neutral-200/10
+					transition"
+					onKeyUp={(event) => {
+						// delete timer on backspace or delete
+						if (event.key === 'Backspace' || event.key === 'Delete') {
+							removeTimer()
+						}
+					}}
+				>
 					<p className="w-1/3 text-left truncate opacity-60 font-sans">{timer.name}</p>
 
 					<p className="w-1/3 text-center">
@@ -242,8 +251,8 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 					<Button
 						size="icon"
 						className="absolute top-0 bottom-0 h-full right-0 translate-x-[100%]
-					hover-hover:group-hover:translate-x-0 group-focus-visible:translate-x-0 aspect-square !p-0 flex
-					items-center justify-center rounded-none" tabIndex={-1}
+						hover-hover:group-hover:translate-x-0 group-focus-visible:translate-x-0 aspect-square !p-0 flex
+						items-center justify-center rounded-none" tabIndex={-1}
 						onClick={(event) => {
 							event.stopPropagation()
 							event.nativeEvent.stopImmediatePropagation()
