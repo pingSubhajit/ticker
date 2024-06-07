@@ -9,6 +9,10 @@ const withPWA = CreatPwa({
 })
 
 const nextConfig = withPWA({
+	experimental: {
+		reactCompiler: true,
+	},
+	reactStrictMode: true,
 	images: {
 		remotePatterns: [
 			{
