@@ -1,22 +1,10 @@
 import stopwatch from '@/public/stopwatch.svg'
 import Image from 'next/image'
 import Button from '@/components/Button'
-import {createClient} from '@/utils/supabase/server'
-import {redirect} from 'next/navigation'
 import Link from 'next/link'
 import WaveDecoration from '@/components/WaveDecoration'
 
 export default async function Home() {
-	const supabase = createClient()
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser()
-
-	if (user) {
-		return redirect('/app')
-	}
-
 	return (
 		<main className="flex flex-col items-start justify-end gap-8 lg:gap-16 !md:py-24 lg:justify-center">
 			<div>
@@ -33,8 +21,11 @@ export default async function Home() {
 				</p>
 			</div>
 
-			<Image src={stopwatch} alt="Stopwatch image used for illustrative purposes"
-			       className="mt-8 mx-auto max-w-48"/>
+			<Image
+				src={stopwatch}
+				alt="Stopwatch image used for illustrative purposes"
+				className="mt-8 mx-auto max-w-48"
+			/>
 
 			<div className="flex flex-col gap-2 items-center lg:flex-row w-full">
 				<Link href="/auth/login" className="w-full"><Button size="full">Get started</Button></Link>
