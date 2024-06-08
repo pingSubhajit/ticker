@@ -1,9 +1,9 @@
 import logo from '@/public/logo.png'
 import Image from 'next/image'
-import Button from '@/components/Button'
 import Link from 'next/link'
-import {createClient} from '@/utils/supabase/server'
 import {Metadata} from 'next'
+import LoginButton from '@/components/LoginButton'
+import {Suspense} from 'react'
 
 export const metadata: Metadata = {
 	title: 'Ticker - Terms of Use',
@@ -15,21 +15,14 @@ export const metadata: Metadata = {
 	]
 }
 
-const TermsPage = async () => {
-	const supabase = createClient()
-
-	const {data: { user },} = await supabase.auth.getUser()
-
+const TermsPage = () => {
 	return (
 		<main className="flex flex-col items-start justify-center gap-8">
 			<header className="flex justify-between items-center w-full">
 				<Link href="/"><Image src={logo} alt="Ticker logo" className="w-8 h-8"/></Link>
-				{!user && <Link href="/auth/login">
-					<Button variant="link">Login</Button>
-				</Link>}
-				{user && <Link href="/app">
-					<Button variant="link">App</Button>
-				</Link>}
+				<Suspense>
+					<LoginButton />
+				</Suspense>
 			</header>
 
 			<div className="prose lg:prose-xl prose-neutral prose-invert">
