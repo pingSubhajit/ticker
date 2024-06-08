@@ -7,8 +7,6 @@ import {DialogsProvider} from '@/components/providers/dialog-provider'
 import NextTopLoader from 'nextjs-toploader'
 import GlobalKeybindProvider from '@/components/providers/global-keybind-provider'
 import localFont from 'next/font/local'
-import {createClient} from '@/utils/supabase/server'
-import {redirect} from 'next/navigation'
 
 export const metadata: Metadata = {
 	metadataBase: new URL(defaultUrl),
@@ -56,17 +54,7 @@ const clashDisplay = localFont({
 	variable: '--font-clash-display'
 })
 
-export default async function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
-	const supabase = createClient()
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser()
-
-	if (user) {
-		return redirect('/app')
-	}
-
+export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang="en" className={clashDisplay.variable}>
 			<body className="font-ClashDisplay">

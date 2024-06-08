@@ -3,8 +3,20 @@ import Image from 'next/image'
 import Button from '@/components/Button'
 import Link from 'next/link'
 import WaveDecoration from '@/components/WaveDecoration'
+import {createClient} from '@/utils/supabase/server'
+import {redirect} from 'next/navigation'
 
-export default function Home() {
+export default async function Home() {
+	const supabase = createClient()
+
+	const {
+		data: { user },
+	} = await supabase.auth.getUser()
+
+	if (user) {
+		return redirect('/app')
+	}
+
 	return (
 		<main className="flex flex-col items-start justify-end gap-8 lg:gap-16 !md:py-24 lg:justify-center">
 			<div>
