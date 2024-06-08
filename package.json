@@ -1,6 +1,6 @@
 {
   "name": "ticker",
-  "version": "0.01",
+  "version": "0.02",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",

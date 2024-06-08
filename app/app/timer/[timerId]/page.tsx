@@ -23,6 +23,10 @@ export async function generateMetadata(
 		error: any
 	}
 
+	if (!timer) {
+		notFound()
+	}
+
 	return {
 		title: timer.name || `Timer no. ${timer.id}`,
 		description: `Timer no. ${timer.id} started ${getInitialBreakdown(timer.started_at).days} days ago. See your 
@@ -34,10 +38,6 @@ const SingleTimer = async ({ params: { timerId } }: { params: { timerId: number 
 	const supabase = createClient()
 	const {data: timer, error} = await supabase.from('timer').select().eq('id', timerId).single() as unknown as {data: Timer, error: any}
 	const {data: { user }} = await supabase.auth.getUser()
-
-	if (!timer) {
-		notFound()
-	}
 
 	return (
 		<main className="flex flex-col justify-between gap-8">

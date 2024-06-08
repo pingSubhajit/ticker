@@ -6,7 +6,7 @@ import Link from 'next/link'
 import logo from '@/public/logo.png'
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu'
 import {useHotkeys} from '@mantine/hooks'
-import {useState} from 'react'
+import {memo, useState} from 'react'
 import {useHelpDialog} from '@/components/providers/dialog-provider'
 
 interface AppHeaderProps {
@@ -16,7 +16,7 @@ interface AppHeaderProps {
 	backLink?: string
 }
 
-const AppHeader = ({ title, profileUrl, isTimer=false, backLink }: AppHeaderProps) => {
+const AppHeaderUnMemoized = ({ title, profileUrl, isTimer=false, backLink }: AppHeaderProps) => {
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 	const {setIsHelpDialogOpen} = useHelpDialog()
 
@@ -28,7 +28,7 @@ const AppHeader = ({ title, profileUrl, isTimer=false, backLink }: AppHeaderProp
 		<header className="flex items-center justify-between gap-2 md:gap-4">
 			{!backLink && <Link href="/about"><Image src={logo} alt="Ticker logo" className="w-10 h-10 rounded-full"/></Link>}
 			{backLink && <Link href={backLink} aria-hidden>
-				<button className="w-10 aspect-square bg-neutral-50/5 hover-hover:hover:bg-neutral-200/10 rounded-full flex items-center justify-center transition">
+				<button role="link" className="w-10 aspect-square bg-neutral-50/5 hover-hover:hover:bg-neutral-200/10 rounded-full flex items-center justify-center transition">
 					<span className="sr-only">Back to home</span>
 					<ChevronLeft className="w-4 h-4" aria-hidden/>
 				</button>
@@ -65,5 +65,7 @@ const AppHeader = ({ title, profileUrl, isTimer=false, backLink }: AppHeaderProp
 		</header>
 	)
 }
+
+const AppHeader = memo(AppHeaderUnMemoized)
 
 export default AppHeader

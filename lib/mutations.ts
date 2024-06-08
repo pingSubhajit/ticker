@@ -4,6 +4,7 @@ import {createClient} from '@/utils/supabase/server'
 import {Timer} from '@/components/TimerList'
 import {redirect} from 'next/navigation'
 import {getCurrentUnixTimestamp} from '@/lib/utils'
+import {revalidatePath} from 'next/cache'
 
 export const createTimer = async (name?: string, timestamp?: number) => {
 	const supabase = createClient()
@@ -19,6 +20,7 @@ export const createTimer = async (name?: string, timestamp?: number) => {
 		throw new Error(error.message || 'Could not create timer')
 	}
 
+	revalidatePath('/app')
 	return timer as Timer
 }
 
@@ -51,6 +53,8 @@ export const stopTimer = async (timerId: number, timestamp?: number) => {
 		throw new Error(error.message || 'Could not stop timer')
 	}
 
+	revalidatePath('/app')
+	revalidatePath(`/app/${timerId}`)
 	return timer as Timer
 }
 
@@ -68,6 +72,8 @@ export const restartTimer = async (timerId: number, timestamp?: number) => {
 		throw new Error(error.message || 'Could not restart timer')
 	}
 
+	revalidatePath('/app')
+	revalidatePath(`/app/${timerId}`)
 	return timer as Timer
 }
 
@@ -82,6 +88,8 @@ export const deleteTimer = async (timerId: number, withRedirect=true) => {
 		throw new Error(error.message || 'Could not delete timer')
 	}
 
+	revalidatePath('/app')
+	revalidatePath(`/app/${timerId}`)
 	withRedirect && redirect('/app')
 
 	return timer as Timer

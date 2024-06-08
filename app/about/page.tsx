@@ -91,7 +91,7 @@ const AboutPage = async () => {
 			<Separator />
 
 			<footer className="flex justify-between items-center w-full">
-				<p className="mt-2 text-sm font-medium text-neutral-400 italic">v0.01</p>
+				<p className="mt-2 text-sm font-medium text-neutral-400 italic">v0.02</p>
 				<a href={portfolio} target="_blank" className="text-yellow-400 hover:text-yellow-500 transition">
 					<p className="mt-2 text-sm font-medium text-right">Subhajit</p>
 				</a>
