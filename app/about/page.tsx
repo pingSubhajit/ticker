@@ -6,6 +6,7 @@ import {createClient} from '@/utils/supabase/server'
 import {githubRepo, portfolio} from '@/lib/constants'
 import Separator from '@/components/Separator'
 import {Metadata} from 'next'
+import {Suspense} from 'react'
 
 export const metadata: Metadata = {
 	title: 'About Ticker - Motivation, Creator, License, and Credits',
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 	]
 }
 
-const AboutPage = async () => {
+const LoginButton = async () => {
 	const supabase = createClient()
 
 	const {
@@ -26,15 +27,27 @@ const AboutPage = async () => {
 	} = await supabase.auth.getUser()
 
 	return (
+		<>
+			{!user && <Link href="/auth/login">
+				<Button variant="link">Login</Button>
+			</Link>}
+			{user && <Link href="/app">
+				<Button variant="link">App</Button>
+			</Link>}
+		</>
+	)
+}
+
+const AboutPage = async () => {
+
+
+	return (
 		<main className="flex flex-col items-start justify-center gap-8">
 			<header className="flex justify-between items-center w-full">
 				<Link href="/"><Image src={logo} alt="Ticker logo" className="w-8 h-8"/></Link>
-				{!user && <Link href="/auth/login">
-					<Button variant="link">Login</Button>
-				</Link>}
-				{user && <Link href="/app">
-					<Button variant="link">App</Button>
-				</Link>}
+				<Suspense>
+					<LoginButton />
+				</Suspense>
 			</header>
 
 			<div>
