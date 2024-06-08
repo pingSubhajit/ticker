@@ -4,7 +4,7 @@ import Button from '@/components/Button'
 import Link from 'next/link'
 import WaveDecoration from '@/components/WaveDecoration'
 
-export default async function Home() {
+export default function Home() {
 	return (
 		<main className="flex flex-col items-start justify-end gap-8 lg:gap-16 !md:py-24 lg:justify-center">
 			<div>
