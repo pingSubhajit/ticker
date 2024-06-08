@@ -11,6 +11,7 @@ import {useHotkeys} from '@mantine/hooks'
 import {Timer} from '@/components/TimerList'
 import {createClient} from '@/utils/supabase/client'
 import Link from 'next/link'
+import {usePathname} from 'next/navigation'
 
 export type Pause = {
 	pauseId: number
@@ -27,6 +28,7 @@ interface CounterProps {
 const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 	const [timer, setTimer] = useState(initialTimer)
 	const supabase = createClient()
+	const route = usePathname()
 
 	useEffect(() => {
 		const channel = supabase
@@ -34,12 +36,24 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 			.on(
 				'postgres_changes',
 				{
-					event: 'UPDATE',
+					event: '*',
 					schema: 'public',
 					table: 'timer',
 					filter: `id=eq.${timer.id}`,
 				},
-				(payload: {new: Timer}) => setTimer(payload.new)
+				(payload) => {
+					switch (payload.eventType) {
+					case 'UPDATE':
+						setTimer(payload.new as Timer)
+						break
+					case 'DELETE':
+						if (payload.old?.id === timer.id && route === `/app/timer/${timer.id}`) {
+							toast.success(`Timer "${timer.name || `Timer no. ${timer.id}`}" deleted`)
+							window.location.href = '/app'
+						}
+						break
+					}
+				}
 			)
 			.subscribe()
 
