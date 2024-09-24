@@ -236,8 +236,7 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 			<li role="listitem">
 				<Link
 					href={`/app/timer/${timer.id}`}
-					className="flex items-center gap-1 w-full
-					rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group hover-hover:hover:bg-neutral-200/10
+					className="flex items-center gap-1.5 w-full rounded-3xl p-6 bg-neutral-50/5 relative overflow-x-hidden group hover-hover:hover:bg-neutral-200/10
 					transition"
 					onKeyUp={(event) => {
 						// delete timer on backspace or delete
@@ -248,9 +247,14 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 				>
 					<p className="w-1/3 text-left truncate opacity-60 font-sans">{timer.name}</p>
 
-					<p className="w-1/3 text-center">
-						<span className={cn(breakdown.hours !== 0 && 'text-yellow-400')}>
-							{breakdown.hours.toString().padStart(2, '0')}
+					<p className="w-1/3 text-center whitespace-nowrap">
+						{breakdown.days > 0 && <>
+							<span className={cn(breakdown.days !== 0 && 'text-yellow-400')}>
+								{breakdown.days}
+							</span> &nbsp;: &nbsp;
+						</>}
+						<span className={cn(breakdown.days === 0 && breakdown.hours !== 0 && 'text-yellow-400')}>
+							{(breakdown.hours % 24).toString().padStart(2, '0')}
 						</span> &nbsp;: &nbsp;
 						<span className={cn(breakdown.hours === 0 && breakdown.minutes !== 0 && 'text-yellow-400')}>
 							{(breakdown.minutes % 60).toString().padStart(2, '0')}
