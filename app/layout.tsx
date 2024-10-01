@@ -57,7 +57,7 @@ const clashDisplay = localFont({
 export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html lang="en" className={clashDisplay.variable}>
-			<body className="font-ClashDisplay">
+			<body className="font-ClashDisplay custom-scroll">
 				{/* PROGRESS BAR */}
 				<NextTopLoader showSpinner={false} color="#facc15" />
 			
