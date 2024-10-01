@@ -56,7 +56,7 @@ const AppHeaderUnMemoized = ({ title, profileUrl, isTimer=false, backLink }: App
 						<Info className="w-4 h-4 mr-2" />
 						About Ticker
 					</DropdownMenuItem></Link>
-					<Link href="/auth/logout"><DropdownMenuItem>
+					<Link href="/auth/logout" prefetch={false}><DropdownMenuItem>
 						<LogOut className="w-4 h-4 mr-2" />
 						Log out
 					</DropdownMenuItem></Link>
