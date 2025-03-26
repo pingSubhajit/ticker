@@ -1,5 +1,3 @@
-import dynamic from 'next/dynamic'
-import {CounterLoading} from '@/components/Counter'
 import {createClient} from '@/utils/supabase/server'
 import {notFound} from 'next/navigation'
 import AppHeader from '@/components/AppHeader'
@@ -7,8 +5,7 @@ import {Timer} from '@/components/TimerList'
 import {getInitialBreakdown} from '@/lib/utils'
 import {Metadata} from 'next'
 import WaveDecoration from '@/components/WaveDecoration'
-
-const Counter = dynamic(() => import('@/components/Counter'), {loading: () => <CounterLoading />})
+import PageTimer from '@/app/app/timer/[timerId]/PageTimer'
 
 export async function generateMetadata({ params }: { params: Promise<{ timerId: string }> }): Promise<Metadata> {
 	// read route params
@@ -46,7 +43,7 @@ const SingleTimer = async ({ params }: { params: Promise<{ timerId: string }> })
 				backLink="/app"
 			/>
 
-			<Counter initialTimer={timer} />
+			<PageTimer initialTimer={timer} />
 
 			<p className="text-center opacity-60 font-sans">Started {getInitialBreakdown(timer.started_at).days}d ago</p>
 
