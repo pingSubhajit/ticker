@@ -11,9 +11,24 @@ export function asOptionalField<T extends z.ZodTypeAny>(schema: T) {
 	return schema.optional().or(emptyStringToUndefined)
 }
 
+export type PauseRecord = {
+  pausedAt: number
+  resumedAt?: number
+}
+
 // Initial breakdown
-export const getInitialBreakdown = (initialTime: number, endedAt?: number) => {
-	const seconds = Math.floor(((endedAt || getCurrentUnixTimestamp()) - initialTime) / 1000)
+export const getInitialBreakdown = (initialTime: number, endedAt?: number, pauses?: PauseRecord[]) => {
+	let seconds = Math.floor(((endedAt || getCurrentUnixTimestamp()) - initialTime) / 1000)
+	
+	// Subtract pause durations
+	if (pauses && pauses.length > 0) {
+		const pauseDuration = pauses.reduce((total, pause) => {
+			const pauseEnd = pause.resumedAt || getCurrentUnixTimestamp()
+			return total + (pauseEnd - pause.pausedAt) / 1000
+		}, 0)
+		seconds -= Math.floor(pauseDuration)
+	}
+	
 	const minutes = Math.floor(seconds / 60)
 	const hours = Math.floor(minutes / 60)
 	const days = Math.floor(hours / 24)

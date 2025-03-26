@@ -1,7 +1,12 @@
 'use client'
 
 import {useEffect, useState} from 'react'
-import {Breakdown, cn, getCurrentUnixTimestamp, getInitialBreakdown} from '@/lib/utils'
+import {
+	Breakdown,
+	cn, 
+	getCurrentUnixTimestamp, 
+	getInitialBreakdown
+} from '@/lib/utils'
 import {LoaderCircle, Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
 import Button from '@/components/Button'
 import {deleteTimer, restartTimer, stopTimer} from '@/lib/mutations'
@@ -61,9 +66,9 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 		}
 	}, [supabase])
 
-	const [breakdown] = useState<Breakdown>(getInitialBreakdown(timer.started_at, timer.ended_at))
+	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(timer.started_at, timer.ended_at))
 	const [pauses, setPauses] = useState<Pause[]>([])
-	const [isRunning, setIsRunning] = useState(true)
+	const [isRunning, setIsRunning] = useState(!timer.ended_at)
 	const [loading, setLoading] = useState({
 		restart: false,
 		delete: false,
@@ -95,6 +100,8 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 		try {
 			const restartedTimer = await restartTimer(timer.id, getCurrentUnixTimestamp())
 			toast.success(`Timer "${restartedTimer.name}" restarted`)
+			setIsRunning(true)
+			setPauses([]) // Clear pauses when restarting
 		} catch (error: any) {
 			toast.error('Could not restart timer')
 		}
@@ -122,19 +129,48 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 	const resumeCounting = () => {
 		const resumedAt = getCurrentUnixTimestamp()
 		const latestPause = pauses[pauses.length - 1]
-		latestPause.resumedAt = resumedAt
-		const updatedPauses = pauses.map(pause => pause.pauseId === latestPause.pauseId ? latestPause : pause)
+		const updatedPause = { ...latestPause, resumedAt }
+		const updatedPauses = pauses.map(pause => 
+			pause.pauseId === latestPause.pauseId ? updatedPause : pause
+		)
 		setPauses(updatedPauses)
 		setIsRunning(true)
 	}
+
+	// Update breakdown state when timer stops
+	useEffect(() => {
+		if (timer.ended_at) {
+			const finalBreakdown = getInitialBreakdown(
+				timer.started_at,
+				timer.ended_at,
+				pauses.map(pause => ({
+					pausedAt: pause.pausedAt,
+					resumedAt: pause.resumedAt
+				}))
+			)
+			setBreakdown(finalBreakdown)
+			setIsRunning(false)
+		}
+	}, [timer.ended_at])
 
 	// Starts the timer counting interval when the component mounts
 	useEffect(() => {
 		const intervalId = setInterval(() => {
 			if (!isRunning || timer.ended_at) return
+			
+			const currentBreakdown = getInitialBreakdown(
+				timer.started_at, 
+				timer.ended_at,
+				pauses.map(pause => ({
+					pausedAt: pause.pausedAt,
+					resumedAt: pause.resumedAt || getCurrentUnixTimestamp()
+				}))
+			)
+			
+			setBreakdown(currentBreakdown)
 		}, 100) // Updating time every 100 milliseconds
 		return () => clearInterval(intervalId) // Cleanup function to clear the interval when component unmounts
-	}, [isRunning, timer.ended_at]) // Empty dependency array ensures the effect runs only once when component mounts
+	}, [isRunning, timer.ended_at, timer.started_at, pauses]) // Run when these dependencies change
 
 	useHotkeys([
 		['s', () => variant === 'base' && !loading.stop && timer.id && !timer.ended_at && stopCounting()],
