@@ -6,19 +6,27 @@ import Link from 'next/link'
 import logo from '@/public/logo.png'
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu'
 import {useHotkeys} from '@mantine/hooks'
-import {memo, useState} from 'react'
+import {memo, useEffect, useState} from 'react'
 import {useHelpDialog} from '@/components/providers/dialog-provider'
 
 interface AppHeaderProps {
 	title: string
 	profileUrl: string
-	isTimer?: boolean
 	backLink?: string
 }
 
-const AppHeaderUnMemoized = ({ title, profileUrl, isTimer=false, backLink }: AppHeaderProps) => {
+const AppHeaderUnMemoized = ({ title, profileUrl, backLink }: AppHeaderProps) => {
 	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+	// Use client-side only state for the profile URL to avoid hydration mismatch
+	const [clientProfileUrl, setClientProfileUrl] = useState('')
+	const [clientTitle, setClientTitle] = useState('')
 	const {setIsHelpDialogOpen} = useHelpDialog()
+
+	// Set the profile URL and title only on the client side
+	useEffect(() => {
+		setClientProfileUrl(profileUrl)
+		setClientTitle(title)
+	}, [profileUrl, title])
 
 	useHotkeys([
 		['i', () => setIsUserMenuOpen(!isUserMenuOpen)]
@@ -34,18 +42,21 @@ const AppHeaderUnMemoized = ({ title, profileUrl, isTimer=false, backLink }: App
 				</button>
 			</Link>}
 
-			<h2 className="h-10 flex items-center justify-center border border-neutral-50/25 w-[70%] md:w-[80%]
-			 rounded-full text-yellow-400">
-				{title}
+			<h2 className="h-10 flex items-center justify-center border border-neutral-50/25 w-[70%] md:w-[80%] rounded-full text-yellow-400">
+				{clientTitle || ''}
 			</h2>
 
 			<DropdownMenu open={isUserMenuOpen} onOpenChange={setIsUserMenuOpen}>
 				<DropdownMenuTrigger>
-					<Image
-						src={profileUrl}
-						alt={profileUrl} width={128}
-						height={128} className="w-10 h-10 rounded-full"
-					/>
+					{clientProfileUrl ? (
+						<Image
+							src={clientProfileUrl}
+							alt="Profile" width={128}
+							height={128} className="w-10 h-10 rounded-full"
+						/>
+					) : (
+						<div className="w-10 h-10 rounded-full bg-neutral-800"></div>
+					)}
 				</DropdownMenuTrigger>
 				<DropdownMenuContent>
 					<DropdownMenuItem onSelect={() => setIsHelpDialogOpen(true)}>

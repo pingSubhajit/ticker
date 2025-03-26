@@ -1,13 +1,12 @@
 import {createClient} from '@/utils/supabase/server'
 import {Timer} from '@/components/TimerList'
 import AppHeader from '@/components/AppHeader'
-import {DateTime} from 'luxon'
 import Separator from '@/components/Separator'
 import NewTimerButton from '@/components/NewTimerButton'
 import {Metadata} from 'next'
-import {getCurrentUnixTimestamp} from '@/lib/utils'
 import OldTimerList from '@/components/OldTimerList'
 import OngoingTimerList from '@/components/OngoingTimerList'
+import DateDisplay from '@/components/DateDisplay'
 
 export const metadata: Metadata = {
 	title: 'Ticker - Long Duration Stopwatch',
@@ -32,9 +31,7 @@ const AppHome = async () => {
 			<AppHeader title="Ticker" profileUrl={user!.user_metadata.avatar_url} />
 
 			<div>
-				<p className="text-sm opacity-60">
-					{DateTime.fromMillis(getCurrentUnixTimestamp()).toFormat('LLL dd\', \'EEEE')}
-				</p>
+				<DateDisplay />
 				<div className="flex justify-between items-end mt-4 gap-4">
 					<h1 className="flex flex-col gap-2 truncate">
 						<span className="text-yellow-400 text-4xl">Welcome</span>

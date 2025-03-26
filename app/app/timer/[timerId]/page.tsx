@@ -6,6 +6,7 @@ import {getInitialBreakdown} from '@/lib/utils'
 import {Metadata} from 'next'
 import WaveDecoration from '@/components/WaveDecoration'
 import PageTimer from '@/app/app/timer/[timerId]/PageTimer'
+import TimerAgeDisplay from '@/components/TimerAgeDisplay'
 
 export async function generateMetadata({ params }: { params: Promise<{ timerId: string }> }): Promise<Metadata> {
 	// read route params
@@ -35,6 +36,10 @@ const SingleTimer = async ({ params }: { params: Promise<{ timerId: string }> })
 	const {data: timer} = await supabase.from('timer').select().eq('id', timerId).single() as unknown as {data: Timer, error: any}
 	const {data: { user }} = await supabase.auth.getUser()
 
+	if (!timer) {
+		notFound()
+	}
+
 	return (
 		<main className="flex flex-col justify-between gap-8">
 			<AppHeader
@@ -45,7 +50,7 @@ const SingleTimer = async ({ params }: { params: Promise<{ timerId: string }> })
 
 			<PageTimer initialTimer={timer} />
 
-			<p className="text-center opacity-60 font-sans">Started {getInitialBreakdown(timer.started_at).days}d ago</p>
+			<TimerAgeDisplay startedAt={timer.started_at} />
 
 			<WaveDecoration />
 		</main>
