@@ -5,7 +5,7 @@ import {Home, Info} from 'lucide-react'
 import Link from 'next/link'
 
 const TimerNotFound = async () => {
-	const supabase = createClient()
+	const supabase = await createClient()
 	const {data: { user }} = await supabase.auth.getUser()
 
 	return (

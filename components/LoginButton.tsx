@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Button from '@/components/Button'
 
 const LoginButton = async () => {
-	const supabase = createClient()
+	const supabase = await createClient()
 
 	const {
 		data: { user },

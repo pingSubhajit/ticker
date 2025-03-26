@@ -85,7 +85,7 @@ const TimerList = ({ timers, setTimers, supabaseSubscribeConfig, channelName, fi
 		return () => {
 			channel.unsubscribe
 		}
-	}, [])
+	}, [supabase])
 
 	return (
 		<ul className={cn('w-full flex flex-col gap-3', className)} role="list" ref={listContainer}>

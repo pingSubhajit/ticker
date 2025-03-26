@@ -3,7 +3,6 @@
 import {useEffect, useState} from 'react'
 import {Breakdown, cn, getCurrentUnixTimestamp, getInitialBreakdown} from '@/lib/utils'
 import {LoaderCircle, Pause, Play, RotateCw, Square, Trash2} from 'lucide-react'
-import {DateTime} from 'luxon'
 import Button from '@/components/Button'
 import {deleteTimer, restartTimer, stopTimer} from '@/lib/mutations'
 import {toast} from 'sonner'
@@ -60,11 +59,9 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 		return () => {
 			channel.unsubscribe()
 		}
-	}, [])
+	}, [supabase])
 
-	const startDate = DateTime.fromMillis(timer.started_at).toFormat('LLL dd\', \'HH:mm')
-	const [time, setTime] = useState(getCurrentUnixTimestamp())
-	const [breakdown, setBreakdown] = useState<Breakdown>(getInitialBreakdown(timer.started_at, timer.ended_at))
+	const [breakdown] = useState<Breakdown>(getInitialBreakdown(timer.started_at, timer.ended_at))
 	const [pauses, setPauses] = useState<Pause[]>([])
 	const [isRunning, setIsRunning] = useState(true)
 	const [loading, setLoading] = useState({
@@ -135,31 +132,9 @@ const Counter = ({initialTimer, variant='base', onDelete }: CounterProps) => {
 	useEffect(() => {
 		const intervalId = setInterval(() => {
 			if (!isRunning || timer.ended_at) return
-			setTime(prevTime => {
-				const currentTime = !isRunning ? prevTime : getCurrentUnixTimestamp() + 100
-				const seconds = Math.floor((currentTime - timer.started_at) / 1000)
-				const minutes = Math.floor(seconds / 60)
-				const hours = Math.floor(minutes / 60)
-				const days = Math.floor(hours / 24)
-				setBreakdown({ hours, minutes, seconds, days })
-				return currentTime
-			})
 		}, 100) // Updating time every 100 milliseconds
 		return () => clearInterval(intervalId) // Cleanup function to clear the interval when component unmounts
 	}, [isRunning, timer.ended_at]) // Empty dependency array ensures the effect runs only once when component mounts
-
-	// Sets the time to the current unix timestamp when the tab is focused
-	useEffect(() => {
-		const continueCounterOnFocusIn = () => {
-			if (document.visibilityState == 'visible' && isRunning) {
-				setTime(getCurrentUnixTimestamp())
-			}
-		}
-
-		document.addEventListener('visibilitychange', continueCounterOnFocusIn)
-
-		return () => {document.removeEventListener('visibilitychange', continueCounterOnFocusIn)} // Cleanup function
-	}, [isRunning])
 
 	useHotkeys([
 		['s', () => variant === 'base' && !loading.stop && timer.id && !timer.ended_at && stopCounting()],

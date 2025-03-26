@@ -7,7 +7,7 @@ import {getCurrentUnixTimestamp} from '@/lib/utils'
 import {revalidatePath} from 'next/cache'
 
 export const createTimer = async (name?: string, timestamp?: number) => {
-	const supabase = createClient()
+	const supabase = await createClient()
 
 	const { data: timer, error } = await supabase
 		.from('timer')
@@ -25,7 +25,7 @@ export const createTimer = async (name?: string, timestamp?: number) => {
 }
 
 export const updateName = async (timerId: number, name: string) => {
-	const supabase = createClient()
+	const supabase = await createClient()
 
 	const { data: timer, error } = await supabase
 		.from('timer')
@@ -41,7 +41,7 @@ export const updateName = async (timerId: number, name: string) => {
 }
 
 export const stopTimer = async (timerId: number, timestamp?: number) => {
-	const supabase = createClient()
+	const supabase = await createClient()
 
 	const { data: timer, error } = await supabase
 		.from('timer')
@@ -59,7 +59,7 @@ export const stopTimer = async (timerId: number, timestamp?: number) => {
 }
 
 export const restartTimer = async (timerId: number, timestamp?: number) => {
-	const supabase = createClient()
+	const supabase = await createClient()
 
 	const { data: timer, error } = await supabase
 		.from('timer')
@@ -78,7 +78,7 @@ export const restartTimer = async (timerId: number, timestamp?: number) => {
 }
 
 export const deleteTimer = async (timerId: number, withRedirect=true) => {
-	const supabase = createClient()
+	const supabase = await createClient()
 
 	const { data: timer, error } = await supabase
 		.from('timer')

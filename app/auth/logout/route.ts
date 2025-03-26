@@ -1,9 +1,8 @@
 import {createClient} from '@/utils/supabase/server'
 import {redirect} from 'next/navigation'
-import {NextRequest, NextResponse} from 'next/server'
 
-export async function GET(req: NextRequest, res: NextResponse) {
-	const supabase = createClient()
+export async function GET() {
+	const supabase = await createClient()
 	await supabase.auth.signOut()
 	return redirect('/')
 }

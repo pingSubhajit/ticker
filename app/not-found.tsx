@@ -1,12 +1,8 @@
-import {createClient} from '@/utils/supabase/server'
 import Button from '@/components/Button'
 import {Home, Info} from 'lucide-react'
 import Link from 'next/link'
 
 const NotFound = async () => {
-	const supabase = createClient()
-	const {data: { user }} = await supabase.auth.getUser()
-
 	return (
 		<main className="flex flex-col justify-between gap-8">
 			<h2 className="h-10 flex items-center justify-center border border-neutral-50/25 w-full

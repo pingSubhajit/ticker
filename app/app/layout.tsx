@@ -5,7 +5,7 @@ import KeybindProvider from '@/components/providers/keybind-provider'
 import HelpButton from '@/components/HelpButton'
 
 const AppLayout = async ({ children }: { children: ReactNode }) => {
-	const supabase = createClient()
+	const supabase = await createClient()
 
 	const {data: { user }} = await supabase.auth.getUser()
 

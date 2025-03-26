@@ -17,14 +17,14 @@ export const metadata: Metadata = {
 }
 
 const AppHome = async () => {
-	const supabase = createClient()
+	const supabase = await createClient()
 
 	const {data: { user }} = await supabase.auth.getUser()
 
-	const {data: timers, error} = await supabase.from('timer').select('*').is('ended_at', null)
+	const {data: timers} = await supabase.from('timer').select('*').is('ended_at', null)
 		.order('created_at', { ascending: false }) as unknown as { data: Timer[], error: any }
 
-	const {data: oldTimers, error: oldTimersError} = await supabase.from('timer').select('*').not('ended_at', 'is', null)
+	const {data: oldTimers} = await supabase.from('timer').select('*').not('ended_at', 'is', null)
 		.order('created_at', { ascending: false }) as unknown as { data: Timer[], error: any }
 
 	return (

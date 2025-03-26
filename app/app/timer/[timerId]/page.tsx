@@ -5,20 +5,18 @@ import {notFound} from 'next/navigation'
 import AppHeader from '@/components/AppHeader'
 import {Timer} from '@/components/TimerList'
 import {getInitialBreakdown} from '@/lib/utils'
-import {Metadata, ResolvingMetadata} from 'next'
+import {Metadata} from 'next'
 import WaveDecoration from '@/components/WaveDecoration'
 
-const Counter = dynamic(() => import('@/components/Counter'), {ssr: false, loading: () => <CounterLoading />})
+const Counter = dynamic(() => import('@/components/Counter'), {loading: () => <CounterLoading />})
 
-export async function generateMetadata(
-	{ params }: { params: { timerId: string } }, parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ timerId: string }> }): Promise<Metadata> {
 	// read route params
-	const timerId = params.timerId
+	const {timerId} = await params
 
 	// fetch data
-	const supabase = createClient()
-	const {data: timer, error} = await supabase.from('timer').select().eq('id', timerId).single() as unknown as {
+	const supabase = await createClient()
+	const {data: timer} = await supabase.from('timer').select().eq('id', timerId).single() as unknown as {
 		data: Timer,
 		error: any
 	}
@@ -34,9 +32,10 @@ export async function generateMetadata(
 	}
 }
 
-const SingleTimer = async ({ params: { timerId } }: { params: { timerId: number } }) => {
-	const supabase = createClient()
-	const {data: timer, error} = await supabase.from('timer').select().eq('id', timerId).single() as unknown as {data: Timer, error: any}
+const SingleTimer = async ({ params }: { params: Promise<{ timerId: string }> }) => {
+	const { timerId } = await params
+	const supabase = await createClient()
+	const {data: timer} = await supabase.from('timer').select().eq('id', timerId).single() as unknown as {data: Timer, error: any}
 	const {data: { user }} = await supabase.auth.getUser()
 
 	return (
